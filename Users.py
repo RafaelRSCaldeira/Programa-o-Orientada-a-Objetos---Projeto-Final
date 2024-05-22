@@ -1,11 +1,10 @@
 from Database import *
 from Manager import Manager
+from Person import Person
 
-class Users():
-    def __init__(self, id: int, name: str, email: str, password: str, position: str) -> None:
-        self.id = id
-        self.name = name
-        self.email = email
+class Users(Person):
+    def __init__(self, password: str, position: str) -> None:
+        super().__init__(id, name, email)
         self.password = password
         self.position = position
 
