@@ -1,11 +1,10 @@
 from Database import *
 from Manager import Manager
+from Person import Person
 
-class Clients():
-    def __init__(self, id: int, name: str, email: str, password: str, position: str) -> None:
-        self.id = id
-        self.name = name
-        self.email = email
+class Clients(Person):
+    def __init__(self, company: str, phone: int) -> None:
+        super().__init__(id, name, email)
         self.company = company
         self.phone = phone
 
@@ -15,7 +14,7 @@ class ClientsManager(Manager):
         self.DAO = UsersDBDAO()
 
     def createClient(self):
-        
+        pass
     
     def register(self, user: Users):
         pass
