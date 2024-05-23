@@ -1,21 +1,19 @@
 from Database import *
 from Manager import Manager
+from datetime import timedelta
 
 class Problems():
-    def __init__(self, id: int, name: str, email: str, password: str, position: str) -> None:
+    def __init__(self, id: int, description: str, sla:int) -> None:
         self.id = id
-        self.name = name
-        self.email = email
-        self.password = password
-        self.position = position
-
+        self.description = description
+        self.sla = timedelta(horas=sla.hours)
 
 class UsersManager(Manager):
     def __init__(self):
-        self.DAO = UsersDBDAO()
+        self.DAO = ProblemsDBDAO()
     
     def register(self, user: Users):
-        self.DAO.insert(user.id, user.name, user.email, user.password, user.position)
+        self.DAO.insert(problem.id,problem.description,problem.sla)
         
     def view(self):
         pass
