@@ -13,16 +13,16 @@ class ProblemsManager(Manager):
         self.DAO = ProblemsDBDAO()
     
     def register(self, problem: Problem):
-        self.DAO.insert([problem.id,problem.description,problem.sla])
+        self.DAO.insert(problem.id,problem.description,problem.sla)
         
     def view(self, problem: Problem):
         pass
     
     def update(self, problem: Problem):
-        self.DAO.update([problem.id, problem.description, problem.sla])
+        self.DAO.update(problem.id, problem.description, problem.sla)
 
     def delete(self, problem: Problem):
-        self.DAO.delete([problem.id])
+        self.DAO.delete(problem.id)
 
     def priority(self, problem: Problem, sla : int):
         pass
