@@ -24,7 +24,7 @@ class ProblemsManager(Manager):
     def delete(self, problem: Problem):
         self.DAO.delete([problem.id])
 
-    def priority(self, problem: Problem, time):
+    def priority(self, problem: Problem, sla : int):
         pass
 
     def problemcategory(self, problem: Problem, category):
