@@ -9,10 +9,6 @@ class Manager(ABC):
             cls.__instance = object().__new__(cls)
         return cls.__instance
 
-    def __init__(self, database: str):
-        self.conexao = sqlite3.connect(database)
-        self.cursor = self.conexao.cursor()
-
     @abstractmethod
     def register(self):
         pass
@@ -28,9 +24,6 @@ class Manager(ABC):
     @abstractmethod
     def delete(self):
         pass
-
-    def close_connection(self):
-        self.conexao.close()
 
 
 
