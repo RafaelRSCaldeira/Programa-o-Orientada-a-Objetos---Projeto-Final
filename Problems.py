@@ -22,4 +22,4 @@ class ProblemsManager(Manager):
         self.DAO.update([problem.id, problem.description, problem.sla])
 
     def delete(self, problem: Problem):
-        pass
+        self.DAO.delete([problem.id])
