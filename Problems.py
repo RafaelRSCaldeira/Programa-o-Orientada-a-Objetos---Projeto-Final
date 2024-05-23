@@ -19,7 +19,7 @@ class UsersManager(Manager):
         pass
     
     def update(self):
-        pass
+        self.DAO.update()
 
     def delete(self):
         pass
