@@ -8,6 +8,21 @@ class Clients(Person):
         self.company = company
         self.phone = phone
 
+    def register(self):
+        try:
+            self.cursor.execute("""
+                INSERT INTO clientes (nome, email, empresa, telefone)
+                VALUES (?, ?, ?, ?)
+            """, (self.name, self.email, self.company, self.phone))
+            self.connect.commit()
+            print(f"Cliente '{self.name}' cadastrado com sucesso!")
+        except sqlite3.Error as error:
+            print(f"Erro ao cadastrar cliente: {error}")
+
+    def view(self):
+        pass 
+
+
 
 class ClientsManager(Manager):
     def __init__(self):
