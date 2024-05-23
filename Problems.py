@@ -12,14 +12,14 @@ class ProblemsManager(Manager):
     def __init__(self):
         self.DAO = ProblemsDBDAO()
     
-    def register(self, user: Users):
-        self.DAO.insert(problem.id,problem.description,problem.sla)
+    def register(self, problem: Problem):
+        self.DAO.insert([problem.id,problem.description,problem.sla])
         
-    def view(self):
+    def view(self, problem: Problem):
         pass
     
-    def update(self):
-        self.DAO.update(problem.id, problem.description, problem.sla)
+    def update(self, problem: Problem):
+        self.DAO.update([problem.id, problem.description, problem.sla])
 
-    def delete(self):
+    def delete(self, problem: Problem):
         pass
