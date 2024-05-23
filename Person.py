@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import sqlite3
 
 
 class Person(ABC):
@@ -6,6 +7,8 @@ class Person(ABC):
         self.id = id
         self.name = name
         self.email = email
+        self.connect = sqlite3.connect()
+        self.cursor = self.connect.cursor()
     
     @abstractmethod
     def register(self):
