@@ -8,7 +8,7 @@ class Problems():
         self.description = description
         self.sla = timedelta(horas=sla.hours)
 
-class UsersManager(Manager):
+class ProblemsManager(Manager):
     def __init__(self):
         self.DAO = ProblemsDBDAO()
     
