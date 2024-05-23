@@ -26,3 +26,6 @@ class ProblemsManager(Manager):
 
     def priority(self, problem: Problem, time):
         pass
+
+    def problemcategory(self, problem: Problem, category):
+        pass
