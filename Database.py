@@ -235,7 +235,7 @@ class ProblemsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            update_query = '''UPDATE Client SET sla = ?, description = ? WHERE id = ?'''
+            update_query = '''UPDATE Problem SET sla = ?, description = ? WHERE id = ?'''
             cursor.execute(update_query, (values['sla'], values['description'], problemID))
             connection.commit()
             connection.close()
@@ -248,7 +248,100 @@ class ProblemsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''DELETE FROM Client WHERE id = ?''', (problemID))
+            cursor.execute('''DELETE FROM Problem WHERE id = ?''', (problemID))
+            connection.commit()
+            connection.close()
+        except sqlite3.Error as error:
+            print(f"Unable to delete the data. Error: {error}.")
+        except:
+            print("An unknown error has occurred.")  
+
+class CallsDBDAO(Database):
+    def __init__(self) -> None:
+        self.DBName = "calls.db"
+        self.create()
+
+    def create(self) -> None:
+        try:
+            connection = sqlite3.connect(self.DBName)
+            cursor = connection.cursor()
+            cursor.execute('''CREATE TABLE IF NOT EXISTS Call 
+            (id INT PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            description VARCHAR(255) NOT NULL,
+            category VARCHAR(255) NOT NULL,
+            clientID INT FOREIGN KEY,
+            userID INT FOREIGN KEY,
+            status: VARCHAR(255) NOT NULL,
+            openingDate VARCHAR(255) NOT NULL,
+            closingDate VARCHAR(255) NOT NULL,
+            maxDate VARCHAR(255) NOT NULL)''')
+            connection.commit()
+            connection.close()
+        except sqlite3.Error as error:
+            print(f"Unable to create the table. Error: {error}.")
+        except:
+            print("An unknown error has occurred.")
+    
+    def insert(self, values: list) -> None:
+        try:
+            connection = sqlite3.connect(self.DBName)
+            cursor = connection.cursor()
+            cursor.execute('''INSERT INTO Problem (id, title, description, 
+            category, clientID, userID, status, openingDate, closingDate, maxDate)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', (values[0], values[1], values[2],
+            values[3], values[4], values[5], values[6], values[7], values[8], values[9]))
+            connection.commit()
+            connection.close()
+        except sqlite3.Error as error:
+            print(f"Unable to insert data. Error: {error}.")
+        except:
+            print("An unknown error has occurred.")
+    
+    def read(self, callID: int) -> dict:
+        try:
+            connection = sqlite3.connect(self.DBName)
+            cursor = connection.cursor()
+            cursor.execute('''SELECT * FROM Call WHERE id = ?''', (callID,))
+            result = cursor.fetchone()
+            connection.close()
+            if result:
+                return {'id': result[0], 'title': result[1], 'description': result[2],
+                        'category': result[3], 'clientID': result[4], 'userID': result[5],
+                        'status': result[6], 'openingDate': result[7], 
+                        'closingDate': result[8], 'maxDate': result[9]}
+            else:
+                return {}
+        except sqlite3.Error as error:
+            print(f"Unable to fetch the data. Error: {error}.")
+        except:
+            print("An unknown error has occurred.")
+    
+    def update(self, callID: int, values: dict) -> None:
+        try:
+            connection = sqlite3.connect(self.DBName)
+            cursor = connection.cursor()
+            update_query = '''UPDATE Call SET title = ?,
+            description = ?, category = ?, clientID = ?,
+            userID = ?, status = ?, openingDate = ?, closingDate = ?,
+            maxDate = ? WHERE id = ?'''
+            cursor.execute(update_query, (values['title'], values['description'],
+                                          values['category'], values['clientID'],
+                                          values['userID'], values['status'],
+                                          values['openingDate'], values['closingDate'],
+                                          values['maxDate'], callID))
+            connection.commit()
+            connection.close()
+        except sqlite3.Error as error:
+            print(f"Unable to update the data. Error: {error}.")
+        except:
+            print("An unknown error has occurred.")
+    
+    def delete(self, callID: int) -> None:
+        try:
+            connection = sqlite3.connect(self.DBName)
+            cursor = connection.cursor()
+            cursor.execute('''DELETE FROM Call WHERE id = ?''', (callID))
             connection.commit()
             connection.close()
         except sqlite3.Error as error:
