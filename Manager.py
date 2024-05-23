@@ -50,9 +50,3 @@ class GerenciadorCategorias(Manager):
         self.cursor.execute("SELECT Tempo FROM SLA WHERE CategoriaID = ?", (id_categoria,))
         return self.cursor.fetchone()
 
-# Exemplo de uso:
-# gerenciador = GerenciadorCategorias('nome_do_banco.db')
-# gerenciador.register('Problema de Conexão', 24)
-# gerenciador.associate_sla(1, 24)  # Associar SLA de 24 horas à categoria
-# print(gerenciador.get_sla(1))  # Verificar SLA associado à categoria
-# gerenciador.close_connection()
