@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import sqlite3
 
 class Manager(ABC):
     __instance = None
