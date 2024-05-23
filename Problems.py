@@ -19,7 +19,7 @@ class UsersManager(Manager):
         pass
     
     def update(self):
-        self.DAO.update()
+        self.DAO.update(problem.id, problem.description, problem.sla)
 
     def delete(self):
         pass
