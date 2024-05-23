@@ -24,8 +24,8 @@ class ProblemsManager(Manager):
     def delete(self, problem: Problem):  #chama a função dao para se conectar com o banco de dados dos problemas e deletar um problema
         self.DAO.delete([problem.id])
     
-    def priority(self, problem: Problem, sla : int):
-        pass
+    def priority(self, problem: Problem, sla : int):        #ajustar prioridade do problema
+        pass        
 
-    def problemcategory(self, problem: Problem, category):
+    def problemcategory(self, problem: Problem, category):        #ajustar cadegoria do problema
         pass
