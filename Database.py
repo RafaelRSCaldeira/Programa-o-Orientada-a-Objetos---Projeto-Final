@@ -2,6 +2,12 @@ from abc import ABC, abstractmethod
 import sqlite3
 
 class Database(ABC):
+    __instance = None
+    def __new__(cls, *args, **kwargs):
+        if cls.__instance is None:
+            cls.__instance = object().__new__(cls)
+        return cls.__instance
+    
     @abstractmethod
     def create():
         pass
@@ -22,19 +28,7 @@ class Database(ABC):
     def delete():
         pass
 
-'''
-As DBDAOs receberão dados através de uma lista
-
-'''
-
-
-class UsersDBDAO(Database):
-    __instance = None
-    def __new__(cls, *args, **kwargs):
-        if cls.__instance is None:
-            cls.__instance = super(UsersDBDAO, cls).__new__(cls, *args, **kwargs)
-        return cls.__instance
-    
+class UsersDBDAO(Database):    
     def __init__(self) -> None:
         self.DBName = "users.db"
         self.create()
@@ -62,7 +56,7 @@ class UsersDBDAO(Database):
     def read(self, user_id: int) -> dict:
         connection = sqlite3.connect(self.DBName)
         cursor = connection.cursor()
-        cursor.execute('''SELECT * FROM User WHERE ID = ?''', (client_id,))
+        cursor.execute('''SELECT * FROM User WHERE ID = ?''', (user_id,))
         result = cursor.fetchone()
         connection.close()
         if result:
@@ -74,33 +68,23 @@ class UsersDBDAO(Database):
         connection = sqlite3.connect(self.DBName)
         cursor = connection.cursor()
         update_query = '''UPDATE User SET Name = ?, Email = ?, Password = ?, Position = ? WHERE ID = ?'''
-        cursor.execute(update_query, (values['Name'], values['Email'], values['Password'], values['Position'], client_id))
+        cursor.execute(update_query, (values['Name'], values['Email'], values['Password'], values['Position'], user_id))
         connection.commit()
         connection.close()
     
     def delete(self, user_id: int) -> None:
         connection = sqlite3.connect(self.DBName)
         cursor = connection.cursor()
-        cursor.execute('''DELETE FROM User WHERE ID = ?''', (client_id,))
+        cursor.execute('''DELETE FROM User WHERE ID = ?''', (user_id,))
         connection.commit()
         connection.close()
 
 
 
 class ClientsDBDAO(Database):
-    __instance = None
-    def __new__(cls, *args, **kwargs):
-        if cls.__instance is None:
-            cls.__instance = super(ClientsDBDAO, cls).__new__(cls, *args, **kwargs)
-        return cls.__instance
     def __init__(self) -> None:
         self.DBName = "clients.db"
         self.create()
-    import sqlite3
-
-class ClientDatabase:
-    def __init__(self, DBName: str):
-        self.DBName = DBName
 
     def create(self) -> None:
         connection = sqlite3.connect(self.DBName)
@@ -149,8 +133,4 @@ class ClientDatabase:
         connection.close()    
 
 class ProblemsDBDAO(Database):
-    __instance = None
-    def __new__(cls, *args, **kwargs):
-        if cls.__instance is None:
-            cls.__instance = super(ProblemsDBDAO, cls).__new__(cls, *args, **kwargs)
-        return cls.__instance
+    pass
