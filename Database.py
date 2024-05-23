@@ -53,10 +53,10 @@ class UsersDBDAO(Database):
         connection.commit()
         connection.close()
     
-    def read(self, user_id: int) -> dict:
+    def read(self, userID: int) -> dict:
         connection = sqlite3.connect(self.DBName)
         cursor = connection.cursor()
-        cursor.execute('''SELECT * FROM User WHERE ID = ?''', (user_id,))
+        cursor.execute('''SELECT * FROM User WHERE ID = ?''', (userID,))
         result = cursor.fetchone()
         connection.close()
         if result:
@@ -64,18 +64,18 @@ class UsersDBDAO(Database):
         else:
             return {}
     
-    def update(self, user_id: int, values: dict) -> None:
+    def update(self, userID: int, values: dict) -> None:
         connection = sqlite3.connect(self.DBName)
         cursor = connection.cursor()
         update_query = '''UPDATE User SET Name = ?, Email = ?, Password = ?, Position = ? WHERE ID = ?'''
-        cursor.execute(update_query, (values['Name'], values['Email'], values['Password'], values['Position'], user_id))
+        cursor.execute(update_query, (values['Name'], values['Email'], values['Password'], values['Position'], userID))
         connection.commit()
         connection.close()
     
-    def delete(self, user_id: int) -> None:
+    def delete(self, userID: int) -> None:
         connection = sqlite3.connect(self.DBName)
         cursor = connection.cursor()
-        cursor.execute('''DELETE FROM User WHERE ID = ?''', (user_id,))
+        cursor.execute('''DELETE FROM User WHERE ID = ?''', (userID,))
         connection.commit()
         connection.close()
 
@@ -106,10 +106,10 @@ class ClientsDBDAO(Database):
         connection.commit()
         connection.close()
     
-    def read(self, client_id: int) -> dict:
+    def read(self, clientID: int) -> dict:
         connection = sqlite3.connect(self.DBName)
         cursor = connection.cursor()
-        cursor.execute('''SELECT * FROM Client WHERE id = ?''', (client_id,))
+        cursor.execute('''SELECT * FROM Client WHERE id = ?''', (clientID,))
         result = cursor.fetchone()
         connection.close()
         if result:
@@ -117,20 +117,66 @@ class ClientsDBDAO(Database):
         else:
             return {}
     
-    def update(self, client_id: int, values: dict) -> None:
+    def update(self, clientID: int, values: dict) -> None:
         connection = sqlite3.connect(self.DBName)
         cursor = connection.cursor()
         update_query = '''UPDATE Client SET name = ?, email = ?, company = ?, phone = ? WHERE id = ?'''
-        cursor.execute(update_query, (values['name'], values['email'], values['company'], values['phone'], client_id))
+        cursor.execute(update_query, (values['name'], values['email'], values['company'], values['phone'], clientID))
         connection.commit()
         connection.close()
     
-    def delete(self, client_id: int) -> None:
+    def delete(self, clientID: int) -> None:
         connection = sqlite3.connect(self.DBName)
         cursor = connection.cursor()
-        cursor.execute('''DELETE FROM Client WHERE id = ?''', (client_id,))
+        cursor.execute('''DELETE FROM Client WHERE id = ?''', (clientID,))
         connection.commit()
         connection.close()    
 
 class ProblemsDBDAO(Database):
-    pass
+    def __init__(self) -> None:
+        self.DBName = "problems.db"
+        self.create()
+
+    def create(self) -> None:
+        connection = sqlite3.connect(self.DBName)
+        cursor = connection.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS Problem 
+        (id INT PRIMARY KEY,
+        sla VARCHAR(255) NOT NULL, 
+        description VARCHAR(255) NOT NULL)''')
+        connection.commit()
+        connection.close()
+    
+    def insert(self, values: list) -> None:
+        connection = sqlite3.connect(self.DBName)
+        cursor = connection.cursor()
+        cursor.execute('''INSERT INTO Problem (id, sla, description)
+        VALUES (?, ?, ?)''', (values[0], values[1], values[2]))
+        connection.commit()
+        connection.close()
+    
+    def read(self, problemID: int) -> dict:
+        connection = sqlite3.connect(self.DBName)
+        cursor = connection.cursor()
+        cursor.execute('''SELECT * FROM Problem WHERE id = ?''', (problemID,))
+        result = cursor.fetchone()
+        connection.close()
+        if result:
+            return {'id': result[0], 'sla': result[1], 'description': result[2]}
+        else:
+            return {}
+    
+    def update(self, problemID: int, values: dict) -> None:
+        connection = sqlite3.connect(self.DBName)
+        cursor = connection.cursor()
+        update_query = '''UPDATE Client SET sla = ?, description = ? WHERE id = ?'''
+        cursor.execute(update_query, (values['sla'], values['description'], problemID))
+        connection.commit()
+        connection.close()
+    
+    def delete(self, problemID: int) -> None:
+        connection = sqlite3.connect(self.DBName)
+        cursor = connection.cursor()
+        cursor.execute('''DELETE FROM Client WHERE id = ?''', (problemID))
+        connection.commit()
+        connection.close()  
