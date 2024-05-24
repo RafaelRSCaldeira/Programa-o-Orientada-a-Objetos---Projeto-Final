@@ -1,56 +1,33 @@
 from Database import *
 from Manager import Manager
-from Person import Person
+from dataclasses import dataclass
 
-class Clients(Person):
-    def __init__(self, company: str, phone: int) -> None:
-        super().__init__(id, name, email)
-        self.company = company
-        self.phone = phone
-
-    def register(self):
-        try:
-            self.cursor.execute("""
-                INSERT INTO clientes (nome, email, empresa, telefone)
-                VALUES (?, ?, ?, ?)
-            """, (self.name, self.email, self.company, self.phone))
-            self.connect.commit()
-            print(f"Cliente '{self.name}' cadastrado com sucesso!")
-        except sqlite3.Error as error:
-            print(f"Erro ao cadastrar cliente: {error}")
-
-    def view(self):
-        pass 
-
-
+@dataclass
+class Clients():
+    id: int
+    name: str
+    email: str
+    company: str
+    phone: str
 
 class ClientsManager(Manager):
     def __init__(self):
-        self.DAO = UsersDBDAO()
-
-    def createClient(self):
-        pass
+        self.DAO = ClientsDBDAO()
     
-    def register(self, user: Users):
-        pass
+    def register(self, client: Clients) -> None:
+        self.DAO.insert([client.id, client.name, client.email, client.company, client.phone])
 
-    def view(self):
-        pass
+    def view(self, clientID: int) -> None:
+        data = self.DAO.read(clientID)
+        print(f"ID: {data['id']}\n\
+                Name: {data['name']}\n\
+                Email: {data['email']}\n\
+                Company: {data['company']}\n\
+                Phone: {data['phone']}")
     
-    def update(self):
-        pass
+    def update(self, clientID: int, updateData: dict) -> None:
+        self.DAO.update(clientID, updateData)
 
-    def delete(self):
-        pass
+    def delete(self, clientID: int) -> None:
+        self.DAO.delete(clientID)
 
-'''
-As funções precisam:
-    criar conexão com banco de dados;
-    criar cursor da conexão;
-    executar comando;
-    fazer o "commit" da ação;
-    encerrar conexão com o banco de dados.
-
-As interações com o banco de dados ocorrerão 
-através das classes DAO
-'''
