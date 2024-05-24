@@ -15,16 +15,10 @@ class MainWindow(ABC):
         self.height = 450
         self.window.geometry(f"{self.width}x{self.height}")
 
-    @abstractmethod
-    def createWidgets(self):
-        '''Cria as entradas e botões da janela, retorna o próprio objeto'''
-        return self
-
 class MainWindowSpecial(MainWindow):
     ''''Janela para Atendentes/Técnicos'''
-    def createWidgets():
-        pass
-    
+    def __init__(self, parent, user) -> None:
+        super().__init__(parent, user)
     # Essa janela deve conter as opções de:
     #     Adição/Remoção/Visualização/Alteração de:
     #         Usuários
@@ -37,17 +31,44 @@ class MainWindowSpecial(MainWindow):
     #         Fechamento
     #         Máxima para atendimento
 
-
-
 class MainWindowRegular(MainWindow):
     '''Janela para usuários normais'''
-    def createWidgets():
-        pass
+    def __init__(self, parent, user) -> None:
+        super().__init__(parent, user)
+        #Menu acima da janela para botão
+        self.menubar = Menu(self.window)
+        self.window.config(menu=self.menubar)
+        self.menubar.add_command(label="Criar Chamado")
+        #Criar e configurar Scroll e Lista
+        self.scrollbar = Scrollbar(self.window, orient="vertical")
+        self.listbox = Listbox(self.window, width=50, height=20, yscrollcommand=self.scrollbar.set)
+        self.scrollbar.config(command=self.listbox.yview)
+        #Posicionar Scroll e Lista
+        self.scrollbar.pack(side="right", fill="y")
+        self.listbox.pack(side="left",fill="both", expand=True)
+
+        for i in range(0,100):
+            self.listbox.insert("end", "item #%s" % i)
 
     # Essa janela só deve conter as opções de:
         # criar chamados
         # visualizar chamados
         # (Obviamente somente os chamados próprios)
+
+class CallVisualizer():
+    '''Janela para visualizar um Chamado'''
+    def __init__(self, parent, call) -> None:
+        #Criar Janela
+        self.window = Toplevel(parent)
+        self.window.title("ID - Titulo")
+        #Definir geometria padrão
+        self.width = 600
+        self.height = 300
+        self.window.geometry(f"{self.width}x{self.height}")
+
+    #ID, Título, Descrição, Categoria, ID do Cliente, ID do Atendente, Status (Aberto, Em atendimento, Fechado)
+    #Data de Abertura, Data Máxima para Atendimento, 
+    #Data de Fechamento
 
 class MainWindowSelector():
     def createWindow(self, user, parent):
