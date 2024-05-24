@@ -52,6 +52,7 @@ class CallVisualizer():
         self.width = 600
         self.height = 300
         self.window.geometry(f"{self.width}x{self.height}")
+        self.window.resizable(False, False)
         
         #Cria o frame para o titulo/cagoria e status
         self.titleFrame = Frame(self.window)
@@ -97,9 +98,9 @@ class CallVisualizer():
         #Criar frame para os tempos
         self.timeFrame = CTkFrame(self.window, bg_color= 'transparent', fg_color='transparent')
         #Criar os labels para os tempos
-        self.openTimeLabel = CTkLabel(self.timeFrame, height=23, text=f"Data de abertura: {self.openingDate}", text_color='Black', font=("Arial", 16), justify='left')
-        self.maxTimeLabel = CTkLabel(self.timeFrame, height=23, text=f"Data máxima: {self.maxDate}", text_color='Black', font=("Arial", 16), justify='left')
-        self.closeTimeLabel = CTkLabel(self.timeFrame, height=23, text=f"Data de fechamento: {self.closingDate}", text_color='Black', font=("Arial", 16), justify='left')
+        self.openTimeLabel = CTkLabel(self.timeFrame, height=23, text=f"Data de abertura: {self.openingDate}", text_color='Black', font=("Arial", 12), justify='left')
+        self.maxTimeLabel = CTkLabel(self.timeFrame, height=23, text=f"Data máxima: {self.maxDate}", text_color='Black', font=("Arial", 12), justify='left')
+        self.closeTimeLabel = CTkLabel(self.timeFrame, height=23, text=f"Data de fechamento: {self.closingDate}", text_color='Black', font=("Arial", 12), justify='left')
         #posicionar os tempos
         self.openTimeLabel.grid(row=0, column=0, sticky='WE', padx = 5)
         self.maxTimeLabel.grid(row=0, column=1, sticky='WE', padx = 5)
