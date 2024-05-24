@@ -78,10 +78,10 @@ class StartScreen:
         self.logoImage = CTkLabel(self.window, 200, 200, 5, text="", image=CTkImage(Image.open("assets/LoginImage.png"), size=(120,120)))
         self.logoImage.place(relx=0.5, rely=0.25, anchor=CENTER)
         #Criando Entrada de Login
-        self.loginField = CTkEntry(self.window, 200, 28, 5)                                        
+        self.loginField = CTkEntry(self.window, 200, 28, 5, placeholder_text='Email', placeholder_text_color='White')                                        
         self.loginField.place(relx=0.5, rely=0.5, anchor=CENTER)
         #Criando Entrada de Senha                       
-        self.passwordField = CTkEntry(self.window, 200, 28, 5, show='*')
+        self.passwordField = CTkEntry(self.window, 200, 28, 5, show='*', placeholder_text='Senha', placeholder_text_color="White")
         self.passwordField.place(relx=0.5, rely=0.6, anchor=CENTER)         
         #Criando Botão de Login                    
         self.logInButton = CTkButton(self.window, 100, 28, 5, text="Log In", command=self._logIn)
