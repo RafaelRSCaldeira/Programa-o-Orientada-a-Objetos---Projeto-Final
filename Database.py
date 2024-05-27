@@ -42,26 +42,30 @@ class UsersDBDAO(Database):
             name VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
-            position VARCHAR(255) NOT NULL''')
+            position VARCHAR(255) NOT NULL)''')
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to create the table. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
     
     def insert(self, values: list) -> None:
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
             cursor.execute(f'''INSERT INTO User (id, name, email, password, position)
-            VALUES ({values[0]},{values[1]},{values[2]},{values[3]},{values[5]})''')
+            VALUES (?, ?, ?, ?, ?)''', (values))
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to insert data. Error: {error}.")
         except:
-            print("An unknown error has occurred.")
+            print(f"An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
 
     def read(self, userID: int) -> dict:
         try:
@@ -69,7 +73,6 @@ class UsersDBDAO(Database):
             cursor = connection.cursor()
             cursor.execute('''SELECT * FROM User WHERE id = ?''', (userID))
             result = cursor.fetchone()
-            connection.close()
             if result:
                 return {'id': result[0], 'name': result[1], 'email': result[2], 'password': result[3], 'position': result[4]}
             else:
@@ -80,6 +83,9 @@ class UsersDBDAO(Database):
         except:
             print("An unknown error has occurred.")
             return dict()
+        finally:
+            if connection:
+                connection.close()
 
     def update(self, userID: int, values: dict) -> None:
         try:
@@ -88,11 +94,13 @@ class UsersDBDAO(Database):
             update_query = '''UPDATE User SET name = ?, email = ?, password = ?, position = ? WHERE id = ?'''
             cursor.execute(update_query, (values['name'], values['email'], values['password'], values['position'], userID))
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to update the data. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
     
     def delete(self, userID: int) -> None:
         try:
@@ -100,11 +108,13 @@ class UsersDBDAO(Database):
             cursor = connection.cursor()
             cursor.execute('''DELETE FROM User WHERE id = ?''', (userID))
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to delete the data. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
 
     def getUserByEmailAndPassword(self, userEmail: str, userPassword: str) -> dict:
         try:
@@ -112,7 +122,6 @@ class UsersDBDAO(Database):
             cursor = connection.cursor()
             cursor.execute('''SELECT * FROM User WHERE email = ? AND password = ?''', (userEmail, userPassword))
             result = cursor.fetchone()
-            connection.close()
             if result:
                 return {'id': result[0], 'name': result[1], 'email': result[2], 'password': result[3], 'position': result[4]}
             else:
@@ -123,9 +132,9 @@ class UsersDBDAO(Database):
         except:
             print("An unknown error has occurred.")
             return dict()
-
-
-
+        finally:
+            if connection:
+                connection.close()
 
 class ClientsDBDAO(Database):
     def __init__(self) -> None:
@@ -143,11 +152,13 @@ class ClientsDBDAO(Database):
             company VARCHAR(255) NOT NULL,
             phone VARCHAR(255) NOT NULL)''')
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to create the table. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
     
     def insert(self, values: list) -> None:
         try:
@@ -156,11 +167,13 @@ class ClientsDBDAO(Database):
             cursor.execute('''INSERT INTO Client (id, name, email, company, phone)
             VALUES (?, ?, ?, ?, ?)''', (values[0], values[1], values[2], values[3], values[4]))
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to insert data. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
 
     def read(self, clientID: int) -> dict:
         try:
@@ -168,7 +181,6 @@ class ClientsDBDAO(Database):
             cursor = connection.cursor()
             cursor.execute('''SELECT * FROM Client WHERE id = ?''', (clientID))
             result = cursor.fetchone()
-            connection.close()
             if result:
                 return {'id': result[0], 'name': result[1], 'email': result[2], 'company': result[3], 'phone': result[4]}
             else:
@@ -179,6 +191,9 @@ class ClientsDBDAO(Database):
         except:
             print("An unknown error has occurred.")
             return dict()
+        finally:
+            if connection:
+                connection.close()
     
     def update(self, clientID: int, values: dict) -> None:
         try:
@@ -187,11 +202,13 @@ class ClientsDBDAO(Database):
             update_query = '''UPDATE Client SET name = ?, email = ?, company = ?, phone = ? WHERE id = ?'''
             cursor.execute(update_query, (values['name'], values['email'], values['company'], values['phone'], clientID))
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to update the data. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
 
     def delete(self, clientID: int) -> None:
         try:
@@ -199,11 +216,13 @@ class ClientsDBDAO(Database):
             cursor = connection.cursor()
             cursor.execute('''DELETE FROM Client WHERE id = ?''', (clientID))
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to delete the data. Error: {error}.")
         except:
-            print("An unknown error has occurred.")    
+            print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
 
 class ProblemsDBDAO(Database):
     def __init__(self) -> None:
@@ -219,11 +238,13 @@ class ProblemsDBDAO(Database):
             sla VARCHAR(255) NOT NULL, 
             description VARCHAR(255) NOT NULL)''')
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to create the table. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
     
     def insert(self, values: list) -> None:
         try:
@@ -232,11 +253,13 @@ class ProblemsDBDAO(Database):
             cursor.execute('''INSERT INTO Problem (id, sla, description)
             VALUES (?, ?, ?)''', (values[0], values[1], values[2]))
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to insert data. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
     
     def read(self, problemID: int) -> dict:
         try:
@@ -244,7 +267,6 @@ class ProblemsDBDAO(Database):
             cursor = connection.cursor()
             cursor.execute('''SELECT * FROM Problem WHERE id = ?''', (problemID))
             result = cursor.fetchone()
-            connection.close()
             if result:
                 return {'id': result[0], 'sla': result[1], 'description': result[2]}
             else:
@@ -255,6 +277,9 @@ class ProblemsDBDAO(Database):
         except:
             print("An unknown error has occurred.")
             return dict()
+        finally:
+            if connection:
+                connection.close()
     
     def update(self, problemID: int, values: dict) -> None:
         try:
@@ -263,11 +288,13 @@ class ProblemsDBDAO(Database):
             update_query = '''UPDATE Problem SET sla = ?, description = ? WHERE id = ?'''
             cursor.execute(update_query, (values['sla'], values['description'], problemID))
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to update the data. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
     
     def delete(self, problemID: int) -> None:
         try:
@@ -275,11 +302,13 @@ class ProblemsDBDAO(Database):
             cursor = connection.cursor()
             cursor.execute('''DELETE FROM Problem WHERE id = ?''', (problemID))
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to delete the data. Error: {error}.")
         except:
             print("An unknown error has occurred.")  
+        finally:
+            if connection:
+                connection.close()
 
 class CallsDBDAO(Database):
     def __init__(self) -> None:
@@ -302,11 +331,13 @@ class CallsDBDAO(Database):
             closingDate VARCHAR(255) NOT NULL,
             maxDate VARCHAR(255) NOT NULL)''')
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to create the table. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
     
     def insert(self, values: list) -> None:
         try:
@@ -317,11 +348,13 @@ class CallsDBDAO(Database):
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', (values[0], values[1], values[2],
             values[3], values[4], values[5], values[6], values[7], values[8], values[9]))
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to insert data. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
     
     def read(self, callID: int) -> dict:
         try:
@@ -329,7 +362,6 @@ class CallsDBDAO(Database):
             cursor = connection.cursor()
             cursor.execute('''SELECT * FROM Call WHERE id = ?''', (callID))
             result = cursor.fetchone()
-            connection.close()
             if result:
                 return {'id': result[0], 'title': result[1], 'description': result[2],
                         'category': result[3], 'clientID': result[4], 'userID': result[5],
@@ -343,6 +375,9 @@ class CallsDBDAO(Database):
         except:
             print("An unknown error has occurred.")
             return dict()
+        finally:
+            if connection:
+                connection.close()
     
     def update(self, callID: int, values: dict) -> None:
         try:
@@ -358,11 +393,13 @@ class CallsDBDAO(Database):
                                           values['openingDate'], values['closingDate'],
                                           values['maxDate'], callID))
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to update the data. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
     
     def delete(self, callID: int) -> None:
         try:
@@ -370,8 +407,10 @@ class CallsDBDAO(Database):
             cursor = connection.cursor()
             cursor.execute('''DELETE FROM Call WHERE id = ?''', (callID))
             connection.commit()
-            connection.close()
         except sqlite3.Error as error:
             print(f"Unable to delete the data. Error: {error}.")
         except:
-            print("An unknown error has occurred.")  
+            print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
