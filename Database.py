@@ -8,6 +8,10 @@ class Database(ABC):
             cls.__instance = object().__new__(cls)
         return cls.__instance
     
+    def __init__(self, dbName: str):
+        self.DBName = dbName
+        self.create()
+    
     @abstractmethod
     def create():
         pass
@@ -28,11 +32,7 @@ class Database(ABC):
     def delete():
         pass
 
-class UsersDBDAO(Database):    
-    def __init__(self) -> None:
-        self.DBName = "users.db"
-        self.create()
-    
+class UsersDBDAO(Database):
     def create(self) -> None:
         try:
             connection = sqlite3.connect(self.DBName)
@@ -137,10 +137,6 @@ class UsersDBDAO(Database):
                 connection.close()
 
 class ClientsDBDAO(Database):
-    def __init__(self) -> None:
-        self.DBName = "clients.db"
-        self.create()
-
     def create(self) -> None:
         try:
             connection = sqlite3.connect(self.DBName)
@@ -225,10 +221,6 @@ class ClientsDBDAO(Database):
                 connection.close()
 
 class ProblemsDBDAO(Database):
-    def __init__(self) -> None:
-        self.DBName = "problems.db"
-        self.create()
-
     def create(self) -> None:
         try:
             connection = sqlite3.connect(self.DBName)
@@ -311,10 +303,6 @@ class ProblemsDBDAO(Database):
                 connection.close()
 
 class CallsDBDAO(Database):
-    def __init__(self) -> None:
-        self.DBName = "calls.db"
-        self.create()
-
     def create(self) -> None:
         try:
             connection = sqlite3.connect(self.DBName)
