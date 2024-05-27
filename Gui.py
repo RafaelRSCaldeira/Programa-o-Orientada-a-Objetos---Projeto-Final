@@ -20,17 +20,146 @@ class MainWindowSpecial(MainWindow):
     ''''Janela para Atendentes/Técnicos'''
     def __init__(self, parent, user) -> None:
         super().__init__(parent, user)
-    # Essa janela deve conter as opções de:
-    #     Adição/Remoção/Visualização/Alteração de:
-    #         Usuários
-    #         Clientes
-    #         Categorias de problemas
-    #         Chamados
-    #     Listar Chamados Baseado em diferentes parametros:  
-    #         Status
-    #         Abertura
-    #         Fechamento
-    #         Máxima para atendimento
+        self.CategorySelectorFrame = Frame(self.window)
+        self.CategorySelectorFrame.pack(side = 'top', anchor = 'w', ipady = 10)
+        #Criar o Menu para seleção de item
+        self.selectedCategory = StringVar()
+        self.usersSelectorButton = Radiobutton(self.CategorySelectorFrame, indicatoron = False, text = 'Usuários', variable = self.selectedCategory, value = 'users', command = self.listUsers)
+        self.clientsSelectorButton = Radiobutton(self.CategorySelectorFrame, indicatoron = False, text = 'Clientes', variable = self.selectedCategory, value = 'clients', command = self.listClients)
+        self.problemsSelectorButton = Radiobutton(self.CategorySelectorFrame, indicatoron = False, text = 'Problemas', variable = self.selectedCategory, value = 'problems', command = self.listProblems)
+        self.callsSelectorButton = Radiobutton(self.CategorySelectorFrame, indicatoron = False, text = 'Chamados', variable = self.selectedCategory, value = 'calls', command = self.listAllCalls)
+        #Posicionar o Menu para seleção de itme
+        self.usersSelectorButton.grid(row = 0, column = 0)
+        self.clientsSelectorButton.grid(row = 0, column = 1)
+        self.problemsSelectorButton.grid(row = 0, column = 2)
+        self.callsSelectorButton.grid(row = 0, column = 3)
+        #Criar o Frame para colocar a Lista e o Scroll
+        self.listFrame = Frame(self.window)
+        self.listFrame.pack(fill = 'both', expand = True)
+        #Criar e configurar Scroll e Lista
+        self.scrollbar = Scrollbar(self.listFrame, orient="vertical")
+        self.listbox = Listbox(self.listFrame, width=50, height=1, yscrollcommand=self.scrollbar.set)
+        self.scrollbar.config(command=self.listbox.yview)
+        #Posicionar Scroll e Lista
+        self.scrollbar.pack(side="right", fill="y")
+        self.listbox.pack(side="left",fill="both", expand=True)
+        #Criar Frame para os botões de adicionar, remover, visualizar e editar
+        self.buttonsFrame = Frame(self.window)
+        self.buttonsFrame.pack(side = 'left', ipady = 5)
+        #Criar os botões de adicionar, remover, visualizar e editar
+        self.addButton = Button(self.buttonsFrame, text = 'Adicionar', command = self.addItem)
+        self.removeButton = Button(self.buttonsFrame, text = 'Remover', command = self.removeItem)
+        self.visualizeButton = Button(self.buttonsFrame, text = 'Visualizar', command = self.visualizeItem)
+        self.editButton = Button(self.buttonsFrame, text = 'Editar', command = self.editItem)
+        #Posicionar os botões de adicionar, remover, visualizar e editar
+        self.addButton.grid(column = 0, row = 0)
+        self.removeButton.grid(column = 1, row = 0)
+        self.visualizeButton.grid(column = 2, row = 0)
+        self.editButton.grid(column = 3, row = 0)
+        #Criar o frame para colocar os botões de filtro de chamados
+        self.filterButtonFrame = Frame(self.window)
+        #Criar os botões de filtro de chamados
+        self.statusFilter = StringVar()
+        self.statusFilter.set('all')
+        self.filterButtonAll = Radiobutton(self.filterButtonFrame, variable = self.statusFilter, value = 'all', text = 'Todos', command = self.listAllCalls)
+        self.filterButtonOpen = Radiobutton(self.filterButtonFrame, variable = self.statusFilter, value = 'open', text = 'Abertos', command = self.listOpenCalls)
+        self.filterButtonClosed = Radiobutton(self.filterButtonFrame, variable = self.statusFilter, value = 'closed', text = 'Fechados', command = self.listClosedCalls)
+        self.filterButtonInService = Radiobutton(self.filterButtonFrame, variable = self.statusFilter, value = 'in service', text = 'Em atendimento', command = self.listInServiceCalls)
+        #Posicionar os botões de filtros de chamados dentro do frame
+        self.filterButtonAll.grid(row = 0, column = 0)
+        self.filterButtonOpen.grid(row = 0, column = 1)
+        self.filterButtonClosed.grid(row = 0, column = 2)
+        self.filterButtonInService.grid(row = 0, column = 3)
+
+    #Mostrar a lista de usuários
+    def listUsers(self):
+        self.filterButtonFrame.pack_forget()
+        self.listbox.delete(0, 'end')
+        for i in range(0,100):
+            self.listbox.insert("end", "Usuário #%s" % i)
+
+    #Mostrar a lista de clientes
+    def listClients(self):
+        self.filterButtonFrame.pack_forget()
+        self.listbox.delete(0, 'end')
+        for i in range(0,100):
+            self.listbox.insert("end", "Cliente #%s" % i)
+
+    #Mostrar a lista de problemas
+    def listProblems(self):
+        self.filterButtonFrame.pack_forget()
+        self.listbox.delete(0, 'end')
+        for i in range(0,100):
+            self.listbox.insert("end", "Problema #%s" % i)
+
+    #Mostrar a lista de todos os chamados
+    def listAllCalls(self):
+        self.filterButtonFrame.pack(before = self.listFrame, side = 'top', anchor = 'w')  
+        self.listbox.delete(0, 'end') 
+        for i in range(0,100):
+            self.listbox.insert("end", "Chamado #%s" % i)
+
+    #Mostrar a lista de chamados abertos
+    def listOpenCalls(self):
+        self.filterButtonFrame.pack(before = self.listFrame, side = 'top', anchor = 'w')  
+        self.listbox.delete(0, 'end') 
+        for i in range(0, 33):
+            self.listbox.insert("end", "Chamado #%s" % i)
+
+    #Mostrar a lista de chamados fechados
+    def listClosedCalls(self):
+        self.filterButtonFrame.pack(before = self.listFrame, side = 'top', anchor = 'w')  
+        self.listbox.delete(0, 'end') 
+        for i in range(33,66):
+            self.listbox.insert("end", "Chamado #%s" % i)
+
+    #Mostrar a lista de chamados em atendimento
+    def listInServiceCalls(self):
+        self.filterButtonFrame.pack(before = self.listFrame, side = 'top', anchor = 'w')  
+        self.listbox.delete(0, 'end') 
+        for i in range(66,100):
+            self.listbox.insert("end", "Chamado #%s" % i)
+    
+    def addItem(self):
+        if self.selectedCategory.get() == 'users':
+            pass
+        elif self.selectedCategory.get() == 'clients':
+            pass
+        elif self.selectedCategory.get() == 'problems':
+            pass
+        elif self.selectedCategory.get() == 'calls':
+            pass
+
+    def removeItem(self):
+        if self.selectedCategory.get() == 'users':
+            pass
+        elif self.selectedCategory.get() == 'clients':
+            pass
+        elif self.selectedCategory.get() == 'problems':
+            pass
+        elif self.selectedCategory.get() == 'calls':
+            pass
+
+    def visualizeItem(self):
+        if self.selectedCategory.get() == 'users':
+            pass
+        elif self.selectedCategory.get() == 'clients':
+            pass
+        elif self.selectedCategory.get() == 'problems':
+            pass
+        elif self.selectedCategory.get() == 'calls':
+            CallVisualizer(self.window, 'Nada')
+
+    def editItem(self):
+        if self.selectedCategory.get() == 'users':
+            pass
+        elif self.selectedCategory.get() == 'clients':
+            pass
+        elif self.selectedCategory.get() == 'problems':
+            pass
+        elif self.selectedCategory.get() == 'calls':
+            pass
+
 
 class CallVisualizer():
     '''Janela para visualizar um Chamado'''
