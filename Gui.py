@@ -2,7 +2,8 @@ from tkinter import *
 from tkinter import messagebox
 from customtkinter import *
 from PIL import Image
-from abc import ABC, abstractmethod
+from abc import ABC
+from Users import *
 
 class MainWindow(ABC):
     '''Janela principal do sistema de gestão'''
@@ -175,7 +176,7 @@ class StartScreen:
         self.__createComponents()
 
     def __createComponents(self): 
-        self.logoImage = CTkLabel(self.window, 200, 200, 5, text="", image=CTkImage(Image.open("assets/LoginImage.png"), size=(120,120)))
+        self.logoImage = CTkLabel(self.window, 200, 200, 5, text="", image=CTkImage(Image.open("assets/LoginImage.jpg"), size=(120,120)))
         self.logoImage.place(relx=0.5, rely=0.25, anchor=CENTER)
         #Criando Entrada de Login
         self.loginField = CTkEntry(self.window, 200, 28, 5, placeholder_text='Email', placeholder_text_color='White', text_color='white', fg_color='black')                                        
@@ -188,12 +189,13 @@ class StartScreen:
         self.logInButton.place(relx=0.5, rely=0.7, anchor=CENTER)
     
     def _logIn(self):
+        usersManager = UsersManager()
         #Pegar os textos das entradas Login e Senha
         login = self.loginField.get()
         password = self.passwordField.get()
         #Verificação de login e senha - placeholder
-        a = True
-        if(a == True): 
+        print(login, password)
+        if(usersManager.isValid(login, password)): 
             #Ocultar janela de login e criar janela principal
             self.window.withdraw()
             self.windowSelector.createWindow("", self.window)
@@ -204,7 +206,3 @@ class StartScreen:
     def initialize(self):
         '''Inicializar janela de login'''
         self.window.mainloop()
-
-if __name__ == '__main__':
-    a = StartScreen()
-    a.initialize()
