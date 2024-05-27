@@ -80,24 +80,6 @@ class UsersDBDAO(Database):
         except:
             print("An unknown error has occurred.")
             return dict()
-    
-    def readByEmail(self, userEmail: str) -> dict:
-        try:
-            connection = sqlite3.connect(self.DBName)
-            cursor = connection.cursor()
-            cursor.execute('''SELECT * FROM User WHERE email = ?''', (userEmail))
-            result = cursor.fetchone()
-            connection.close()
-            if result:
-                return {'id': result[0], 'name': result[1], 'email': result[2], 'password': result[3], 'position': result[4]}
-            else:
-                return dict()
-        except sqlite3.Error as error:
-            print(f"Unable to fetch the data. Error: {error}.")
-            return dict()
-        except:
-            print("An unknown error has occurred.")
-            return dict()
 
     def update(self, userID: int, values: dict) -> None:
         try:
@@ -122,7 +104,26 @@ class UsersDBDAO(Database):
         except sqlite3.Error as error:
             print(f"Unable to delete the data. Error: {error}.")
         except:
-            print("An unknown error has occurred.")   
+            print("An unknown error has occurred.")
+
+    def getUserByEmailAndPassword(self, userEmail: str, userPassword: str) -> dict:
+        try:
+            connection = sqlite3.connect(self.DBName)
+            cursor = connection.cursor()
+            cursor.execute('''SELECT * FROM User WHERE email = ? AND password = ?''', (userEmail, userPassword))
+            result = cursor.fetchone()
+            connection.close()
+            if result:
+                return {'id': result[0], 'name': result[1], 'email': result[2], 'password': result[3], 'position': result[4]}
+            else:
+                return dict()
+        except sqlite3.Error as error:
+            print(f"Unable to fetch the data. Error: {error}.")
+            return dict()
+        except:
+            print("An unknown error has occurred.")
+            return dict()
+
 
 
 
@@ -171,11 +172,13 @@ class ClientsDBDAO(Database):
             if result:
                 return {'id': result[0], 'name': result[1], 'email': result[2], 'company': result[3], 'phone': result[4]}
             else:
-                return {}
+                return dict()
         except sqlite3.Error as error:
             print(f"Unable to fetch the data. Error: {error}.")
+            return dict()
         except:
             print("An unknown error has occurred.")
+            return dict()
     
     def update(self, clientID: int, values: dict) -> None:
         try:
@@ -245,11 +248,13 @@ class ProblemsDBDAO(Database):
             if result:
                 return {'id': result[0], 'sla': result[1], 'description': result[2]}
             else:
-                return {}
+                return dict()
         except sqlite3.Error as error:
             print(f"Unable to fetch the data. Error: {error}.")
+            return dict()
         except:
             print("An unknown error has occurred.")
+            return dict()
     
     def update(self, problemID: int, values: dict) -> None:
         try:
@@ -331,11 +336,13 @@ class CallsDBDAO(Database):
                         'status': result[6], 'openingDate': result[7], 
                         'closingDate': result[8], 'maxDate': result[9]}
             else:
-                return {}
+                return dict()
         except sqlite3.Error as error:
             print(f"Unable to fetch the data. Error: {error}.")
+            return dict()
         except:
             print("An unknown error has occurred.")
+            return dict()
     
     def update(self, callID: int, values: dict) -> None:
         try:
