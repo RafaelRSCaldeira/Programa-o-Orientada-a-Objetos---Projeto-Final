@@ -2,6 +2,7 @@ from Database import *
 from Manager import Manager
 from dataclasses import dataclass
 
+
 @dataclass
 class Users():
     id: int
@@ -30,4 +31,10 @@ class UsersManager(Manager):
 
     def delete(self, userID: int) -> None:
         self.DAO.delete(userID)
+
+    def isValid(self, userEmail: str, userPassword: str) -> bool:
+        data = self.DAO.getUserByEmailAndPassword(userEmail, userPassword)
+        if len(data) == 0:
+            return False
+        return True
 
