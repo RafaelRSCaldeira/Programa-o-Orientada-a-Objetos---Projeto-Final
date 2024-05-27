@@ -62,23 +62,43 @@ class UsersDBDAO(Database):
             print(f"Unable to insert data. Error: {error}.")
         except:
             print("An unknown error has occurred.")
-    
+
     def read(self, userID: int) -> dict:
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''SELECT * FROM User WHERE ID = ?''', (userID,))
+            cursor.execute('''SELECT * FROM User WHERE id = ?''', (userID))
             result = cursor.fetchone()
             connection.close()
             if result:
                 return {'id': result[0], 'name': result[1], 'email': result[2], 'password': result[3], 'position': result[4]}
             else:
-                return {}
+                return dict()
         except sqlite3.Error as error:
             print(f"Unable to fetch the data. Error: {error}.")
+            return dict()
         except:
             print("An unknown error has occurred.")
+            return dict()
     
+    def readByEmail(self, userEmail: str) -> dict:
+        try:
+            connection = sqlite3.connect(self.DBName)
+            cursor = connection.cursor()
+            cursor.execute('''SELECT * FROM User WHERE email = ?''', (userEmail))
+            result = cursor.fetchone()
+            connection.close()
+            if result:
+                return {'id': result[0], 'name': result[1], 'email': result[2], 'password': result[3], 'position': result[4]}
+            else:
+                return dict()
+        except sqlite3.Error as error:
+            print(f"Unable to fetch the data. Error: {error}.")
+            return dict()
+        except:
+            print("An unknown error has occurred.")
+            return dict()
+
     def update(self, userID: int, values: dict) -> None:
         try:
             connection = sqlite3.connect(self.DBName)
@@ -96,7 +116,7 @@ class UsersDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''DELETE FROM User WHERE id = ?''', (userID,))
+            cursor.execute('''DELETE FROM User WHERE id = ?''', (userID))
             connection.commit()
             connection.close()
         except sqlite3.Error as error:
@@ -145,7 +165,7 @@ class ClientsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''SELECT * FROM Client WHERE id = ?''', (clientID,))
+            cursor.execute('''SELECT * FROM Client WHERE id = ?''', (clientID))
             result = cursor.fetchone()
             connection.close()
             if result:
@@ -174,7 +194,7 @@ class ClientsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''DELETE FROM Client WHERE id = ?''', (clientID,))
+            cursor.execute('''DELETE FROM Client WHERE id = ?''', (clientID))
             connection.commit()
             connection.close()
         except sqlite3.Error as error:
@@ -219,7 +239,7 @@ class ProblemsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''SELECT * FROM Problem WHERE id = ?''', (problemID,))
+            cursor.execute('''SELECT * FROM Problem WHERE id = ?''', (problemID))
             result = cursor.fetchone()
             connection.close()
             if result:
@@ -302,7 +322,7 @@ class CallsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''SELECT * FROM Call WHERE id = ?''', (callID,))
+            cursor.execute('''SELECT * FROM Call WHERE id = ?''', (callID))
             result = cursor.fetchone()
             connection.close()
             if result:
