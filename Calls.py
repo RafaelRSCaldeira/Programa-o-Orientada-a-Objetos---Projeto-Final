@@ -23,8 +23,8 @@ class CallsManager():
             cls.__instance = object().__new__(cls)
         return cls.__instance
 
-    def __init__(self):
-        self.DAO = CallsDBDAO()
+    def __init__(self, dbName: str):
+        self.DAO = CallsDBDAO(dbName)
 
     def open(self, call: Calls) -> None:
         self.DAO.insert([call.id, call.title, call.description, call.category,

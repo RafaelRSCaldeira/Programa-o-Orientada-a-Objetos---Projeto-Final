@@ -13,8 +13,8 @@ class Users():
 
 
 class UsersManager(Manager):
-    def __init__(self):
-        self.DAO = UsersDBDAO()
+    def __init__(self, dbName: str):
+        self.DAO = UsersDBDAO(dbName)
     
     def register(self, user: Users) -> None:
         self.DAO.insert([user.id, user.name, user.email, user.password, user.position])

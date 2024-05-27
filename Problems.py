@@ -10,8 +10,8 @@ class Problems():
     sla: int
 
 class ProblemsManager(Manager):
-    def __init__(self):
-        self.DAO = ProblemsDBDAO()
+    def __init__(self, dbName: str):
+        self.DAO = ProblemsDBDAO(dbName)
     
     def register(self, problem: Problems) -> None:
         self.DAO.insert([problem.id,problem.description,problem.sla])

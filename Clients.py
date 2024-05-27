@@ -11,8 +11,8 @@ class Clients():
     phone: str
 
 class ClientsManager(Manager):
-    def __init__(self):
-        self.DAO = ClientsDBDAO()
+    def __init__(self, dbName: str):
+        self.DAO = ClientsDBDAO(dbName)
     
     def register(self, client: Clients) -> None:
         self.DAO.insert([client.id, client.name, client.email, client.company, client.phone])
