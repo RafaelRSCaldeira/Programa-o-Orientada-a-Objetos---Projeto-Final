@@ -312,9 +312,9 @@ class CallsDBDAO(Database):
             title VARCHAR(255) NOT NULL,
             description VARCHAR(255) NOT NULL,
             category VARCHAR(255) NOT NULL,
-            clientID INT FOREIGN KEY,
-            userID INT FOREIGN KEY,
-            status: VARCHAR(255) NOT NULL,
+            clientID INT,
+            userID INT,
+            status VARCHAR(255) NOT NULL,
             openingDate VARCHAR(255) NOT NULL,
             closingDate VARCHAR(255) NOT NULL,
             maxDate VARCHAR(255) NOT NULL)''')
@@ -331,7 +331,7 @@ class CallsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''INSERT INTO Problem (id, title, description, 
+            cursor.execute('''INSERT INTO Call (id, title, description, 
             category, clientID, userID, status, openingDate, closingDate, maxDate)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', (values[0], values[1], values[2],
             values[3], values[4], values[5], values[6], values[7], values[8], values[9]))
