@@ -15,7 +15,7 @@ class ClientsManager(Manager):
         self.DAO = ClientsDBDAO(dbName)
     
     def register(self, client: Clients) -> None:
-        self.DAO.insert([client.name, client.email, client.company, client.phone])
+        self.DAO.insert([client.name, client.email, client.password, client.company, client.phone])
 
     def view(self, clientID: int) -> None:
         data = self.DAO.read(clientID)
