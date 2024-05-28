@@ -10,7 +10,7 @@ from Calls import *
 
 class MainWindow(ABC):
     '''Janela principal do sistema de gestão'''
-    def __init__(self, parent, user) -> None:
+    def __init__(self, parent : Widget, user) -> None:
         #Criar Janela Principal
         self.window = Toplevel(parent)
         self.window.title("Menu - Sistema Integrado de Gestão Empresarial")
@@ -21,7 +21,7 @@ class MainWindow(ABC):
 
 class MainWindowSpecial(MainWindow):
     ''''Janela para Atendentes/Técnicos'''
-    def __init__(self, parent, user) -> None:
+    def __init__(self, parent : Widget, user) -> None:
         super().__init__(parent, user)
         self.CategorySelectorFrame = Frame(self.window)
         self.CategorySelectorFrame.pack(side = 'top', anchor = 'w', ipady = 10)
@@ -175,7 +175,7 @@ class MainWindowSpecial(MainWindow):
 
 
 class UserAdder():
-    def __init__(self, parent) -> None:
+    def __init__(self, parent : Widget) -> None:
         #Criar a janela
         self.window = Toplevel(parent)
         #Definir geometria padrão
@@ -217,7 +217,7 @@ class UserAdder():
             messagebox.showwarning('Inválido', "Todos os campos devem ser preenchidos.")           
 
 class ClientAdder():
-    def __init__(self, parent) -> None:
+    def __init__(self, parent : Widget) -> None:
         #Criar a janela
         self.window = Toplevel(parent)
         #Definir geometria padrão
@@ -259,7 +259,7 @@ class ClientAdder():
             messagebox.showwarning('Inválido', "Todos os campos devem ser preenchidos.")           
 
 class ProblemsAdder():
-    def __init__(self, parent) -> None:
+    def __init__(self, parent : Widget) -> None:
         #Criar a janela
         self.window = Toplevel(parent)
         #Definir geometria padrão
@@ -297,7 +297,7 @@ class ProblemsAdder():
             messagebox.showwarning('Inválido', "Todos os campos devem ser preenchidos.")           
 
 class UserEditer():
-    def __init__(self, parent, user) -> None:
+    def __init__(self, parent : Widget, user) -> None:
         #Criar a janela
         self.window = Toplevel(parent)
         #Definir geometria padrão
@@ -344,7 +344,7 @@ class UserEditer():
             messagebox.showwarning('Inválido', "Todos os campos devem ser preenchidos.")      
 
 class ClientEditer():
-    def __init__(self, parent, client) -> None:
+    def __init__(self, parent : Widget, client) -> None:
         #Criar a janela
         self.window = Toplevel(parent)
         #Definir geometria padrão
@@ -391,7 +391,7 @@ class ClientEditer():
             messagebox.showwarning('Inválido', "Todos os campos devem ser preenchidos.")  
 
 class ProblemsEditer():
-    def __init__(self, parent, problem) -> None:
+    def __init__(self, parent : Widget, problem) -> None:
         #Criar a janela
         self.window = Toplevel(parent)
         #Definir geometria padrão
@@ -431,7 +431,7 @@ class ProblemsEditer():
             messagebox.showwarning('Inválido', "Todos os campos devem ser preenchidos.")  
 
 class CallsEditer():
-    def __init__(self, parent, call) -> None:
+    def __init__(self, parent : Widget, call) -> None:
         #Criar a janela
         self.window = Toplevel(parent)
         #Definir geometria padrão
@@ -503,7 +503,7 @@ class CallsEditer():
 
 class UserVisualizer():
     '''Janela para visualizar um Chamado'''
-    def __init__(self, parent, user) -> None:
+    def __init__(self, parent : Widget, user) -> None:
         #Salvar dados do Usuário
         self.userId = 'Placeholder id'
         self.name = 'Placeholder name'
@@ -541,7 +541,7 @@ class UserVisualizer():
 
 class ClientVisualizer():
     '''Janela para visualizar um Chamado'''
-    def __init__(self, parent, client) -> None:
+    def __init__(self, parent : Widget, client) -> None:
         #Salvar dados do Usuário
         self.clientId = 'Placeholder id'
         self.name = 'Placeholder name'
@@ -584,7 +584,7 @@ class ClientVisualizer():
         self.infoFrame.pack(fill='x', pady = 15, padx = 30)
 
 class ProblemVisualizer():
-     def __init__(self, parent, problema) -> None:
+     def __init__(self, parent : Widget, problema) -> None:
         #Salvar dados do Usuário
         self.problemId = 'Placeholder id'
         self.sla = 'Placeholder sla'
@@ -610,7 +610,7 @@ class ProblemVisualizer():
         self.slaLabel.pack()
 
 class CallsAdder():
-    def __init__(self, parent) -> None:
+    def __init__(self, parent : Widget) -> None:
         #Criar a janela
         self.window = Toplevel(parent)
         #Definir geometria padrão
@@ -669,7 +669,7 @@ class CallsAdder():
 
 class CallVisualizer():
     '''Janela para visualizar um Chamado'''
-    def __init__(self, parent, call) -> None:
+    def __init__(self, parent : Widget, call) -> None:
         #Salvar dados do Call
         self.callID = 0
         self.title = 'Placeholder title'
@@ -757,7 +757,7 @@ class CallVisualizer():
 
 class MainWindowRegular(MainWindow):#
     '''Janela para usuários normais'''
-    def __init__(self, parent, user) -> None:
+    def __init__(self, parent : Widget, user) -> None:
         super().__init__(parent, user)
         #Menu acima da janela para botão
         self.menubar = Menu(self.window)
@@ -785,13 +785,20 @@ class MainWindowRegular(MainWindow):#
         # visualizar chamados
         # (Obviamente somente os chamados próprios)
 
+class InvalidUser(BaseException):
+    pass
+
 class MainWindowSelector():
-    def createWindow(self, user, parent):
+    def createWindow(self, user, parent : Widget):
         #Verificar qual tipo de usuário é e criar janela adequada
-        # if(True):
-        #     return MainWindowRegular(parent, user)
-        # elif(True):
+        
+        if(type(user) == Clients):
+            return MainWindowRegular(parent, user)
+        elif(type(user) == Users):
             return MainWindowSpecial(parent, user)
+        else:
+            print(user)
+            raise InvalidUser("Erro usuário Inválido")
 
 class StartScreen:
     '''Janela parente de todas as outras e também janela de login'''
@@ -825,18 +832,24 @@ class StartScreen:
     
     def _logIn(self):
         usersManager = UsersManager("manager.db")
+        clientsManager = ClientsManager("manager.db")
         #Pegar os textos das entradas Login e Senha
         login = self.loginField.get()
         password = self.passwordField.get()
         #Verificação de login e senha - placeholder
-        print(login, password)
-        # if(usersManager.isValid(login, password)): 
-            #Ocultar janela de login e criar janela principal
-        self.window.withdraw()
-        self.windowSelector.createWindow("", self.window)
-        # else:
-        #     #Criar mensagem de erro
-        #     messagebox.showwarning('Inválido', "Usuário ou Senha Inválidos.")
+        if(usersManager.isValid(login, password)): 
+            # Ocultar janela de login e criar janela principal 
+            user = usersManager.getByEmailAndPassword(login, password)
+            self.window.withdraw()
+            self.windowSelector.createWindow(user, self.window)
+        elif(clientsManager.isValid(login, password)):
+            # Ocultar janela de login e criar janela principal
+            client = clientsManager.getByEmailAndPassword(login, password)
+            self.window.withdraw()
+            self.windowSelector.createWindow(client, self.window)
+        else:
+            #Criar mensagem de erro
+            messagebox.showwarning('Inválido', "Usuário ou Senha Inválidos.")
 
     def initialize(self):
         '''Inicializar janela de login'''
