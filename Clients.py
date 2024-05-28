@@ -7,6 +7,7 @@ class Clients():
     id: int
     name: str
     email: str
+    password: str
     company: str
     phone: str
 

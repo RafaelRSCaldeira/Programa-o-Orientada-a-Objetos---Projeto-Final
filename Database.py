@@ -153,6 +153,7 @@ class ClientsDBDAO(Database):
             (id INTEGER PRIMARY KEY AUTOINCREMENT, 
             name VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
+            password VARCHAR(255) NOT NULL,
             company VARCHAR(255) NOT NULL,
             phone VARCHAR(255) NOT NULL)''')
             connection.commit()
@@ -169,8 +170,8 @@ class ClientsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''INSERT INTO Client (name, email, company, phone)
-            VALUES (?, ?, ?, ?)''', (values))
+            cursor.execute('''INSERT INTO Client (name, email, password, company, phone)
+            VALUES (?, ?, ?, ?, ?)''', (values))
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to insert data. Error: {error}.")
@@ -188,7 +189,7 @@ class ClientsDBDAO(Database):
             cursor.execute(f'''SELECT * FROM Client WHERE id = {clientID}''')
             result = cursor.fetchone()
             if result:
-                return {'id': result[0], 'name': result[1], 'email': result[2], 'company': result[3], 'phone': result[4]}
+                return {'id': result[0], 'name': result[1], 'email': result[2], 'password': result[3], 'company': result[4], 'phone': result[5]}
             else:
                 return dict()
         except sqlite3.Error as error:
