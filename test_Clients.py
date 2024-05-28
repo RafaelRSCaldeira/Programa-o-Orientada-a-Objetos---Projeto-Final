@@ -79,3 +79,7 @@ def test_getByEmailAndPassword(clientsManager):
     data = clientsManager.getByEmailAndPassword("client1@example.com", "password123")
     assert data == {'id': 1, 'name': 'Client 1', 'email': 'client1@example.com', 'password': 'password123', 'company': 'Company A', 'phone': '123456789'}
     assert clientsManager.getByEmailAndPassword("client2@example.com", "password") == {}
+
+def test_getByID(clientsManager):
+    assert clientsManager.getByID(1) == {'id': 1, 'name': 'Client 1', 'email': 'client1@example.com', 'password': 'password123', 'company': 'Company A', 'phone': '123456789'}
+    assert clientsManager.getByID(2) == {}
