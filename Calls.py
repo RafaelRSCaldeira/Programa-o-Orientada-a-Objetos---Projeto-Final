@@ -70,3 +70,10 @@ class CallsManager():
 
     def delete(self, callID: int) -> None:
         self.DAO.delete(callID)
+
+    #Adicionado metodo getAllIds
+    def getAllIds(self) -> list:
+        ids = []
+        for i in self.DAO.getAllIds():
+            ids.append(i[0])
+        return ids

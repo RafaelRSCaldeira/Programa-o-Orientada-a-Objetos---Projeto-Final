@@ -38,3 +38,10 @@ class ProblemsManager(Manager):
         if(len(data) == 0):
            return None
         return Problems(data.get('id'), data.get('description'), data.get('sla'))
+    
+    #Adicionado metodo getAllIds
+    def getAllIds(self) -> list:
+        ids = []
+        for i in self.DAO.getAllIds():
+            ids.append(i[0])
+        return ids

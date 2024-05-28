@@ -55,3 +55,10 @@ class ClientsManager(Manager):
         if(len(data) == 0):
            return None
         return Clients(data.get('id'), data.get('name'), data.get('email'), data.get('password'), data.get('company'), data.get('phone'))
+    
+    #Adicionado metodo getAllIds
+    def getAllIds(self) -> list:
+        ids = []
+        for i in self.DAO.getAllIds():
+            ids.append(i[0])
+        return ids

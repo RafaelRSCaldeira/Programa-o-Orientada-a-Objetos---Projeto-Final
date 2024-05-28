@@ -143,6 +143,28 @@ class UsersDBDAO(Database):
             if connection:
                 connection.close()
 
+    #Adicionado getAllIds
+    def getAllIds(self):
+        connection = None
+        try:
+            connection = sqlite3.connect(self.DBName)
+            cursor = connection.cursor()
+            cursor.execute(f'''SELECT id FROM User''')
+            result = cursor.fetchall()
+            if result:
+                return list(result)
+            else:
+                return list()
+        except sqlite3.Error as error:
+            print(f"Unable to fetch the data. Error: {error}.")
+            return list()
+        except:
+            print("An unknown error has occurred.")
+            return list()
+        finally:
+            if connection:
+                connection.close()
+
 class ClientsDBDAO(Database):
     def create(self) -> None:
         connection = None
@@ -255,6 +277,28 @@ class ClientsDBDAO(Database):
             if connection:
                 connection.close()
 
+    #Adicionado getAllIds
+    def getAllIds(self):
+        connection = None
+        try:
+            connection = sqlite3.connect(self.DBName)
+            cursor = connection.cursor()
+            cursor.execute(f'''SELECT id FROM Client''')
+            result = cursor.fetchall()
+            if result:
+                return list(result)
+            else:
+                return list()
+        except sqlite3.Error as error:
+            print(f"Unable to fetch the data. Error: {error}.")
+            return list()
+        except:
+            print("An unknown error has occurred.")
+            return list()
+        finally:
+            if connection:
+                connection.close()
+
 class ProblemsDBDAO(Database):
     def create(self) -> None:
         connection = None
@@ -339,6 +383,28 @@ class ProblemsDBDAO(Database):
             print(f"Unable to delete the data. Error: {error}.")
         except:
             print("An unknown error has occurred.")  
+        finally:
+            if connection:
+                connection.close()
+
+    #Adicionado getAllIds
+    def getAllIds(self):
+        connection = None
+        try:
+            connection = sqlite3.connect(self.DBName)
+            cursor = connection.cursor()
+            cursor.execute(f'''SELECT id FROM Problem''')
+            result = cursor.fetchall()
+            if result:
+                return list(result)
+            else:
+                return list()
+        except sqlite3.Error as error:
+            print(f"Unable to fetch the data. Error: {error}.")
+            return list()
+        except:
+            print("An unknown error has occurred.")
+            return list()
         finally:
             if connection:
                 connection.close()
@@ -438,6 +504,28 @@ class CallsDBDAO(Database):
             print(f"Unable to delete the data. Error: {error}.")
         except:
             print("An unknown error has occurred.")
+        finally:
+            if connection:
+                connection.close()
+
+    #Adicionado getAllIds
+    def getAllIds(self):
+        connection = None
+        try:
+            connection = sqlite3.connect(self.DBName)
+            cursor = connection.cursor()
+            cursor.execute(f'''SELECT id FROM Call''')
+            result = cursor.fetchall()
+            if result:
+                return list(result)
+            else:
+                return list()
+        except sqlite3.Error as error:
+            print(f"Unable to fetch the data. Error: {error}.")
+            return list()
+        except:
+            print("An unknown error has occurred.")
+            return list()
         finally:
             if connection:
                 connection.close()

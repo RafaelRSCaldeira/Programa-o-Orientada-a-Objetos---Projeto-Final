@@ -55,3 +55,10 @@ class UsersManager(Manager):
         if(len(data) == 0):
            return None
         return Users(data.get('id'), data.get('name'), data.get('email'), data.get('password'), data.get('position'))
+    
+    #Adicionado metodo getAllIds
+    def getAllIds(self) -> list:
+        ids = []
+        for i in self.DAO.getAllIds():
+            ids.append(i[0])
+        return ids
