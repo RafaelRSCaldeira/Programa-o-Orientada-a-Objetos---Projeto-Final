@@ -5,7 +5,6 @@ from dataclasses import dataclass
 
 @dataclass
 class Users():
-    id: int
     name: str
     email: str
     password: str
@@ -17,7 +16,7 @@ class UsersManager(Manager):
         self.DAO = UsersDBDAO(dbName)
     
     def register(self, user: Users) -> None:
-        self.DAO.insert([user.id, user.name, user.email, user.password, user.position])
+        self.DAO.insert([user.name, user.email, user.password, user.position])
         
     def view(self, userID: int) -> None:
         data = self.DAO.read(userID)

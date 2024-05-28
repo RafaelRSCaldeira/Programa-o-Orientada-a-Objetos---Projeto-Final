@@ -5,7 +5,6 @@ from dataclasses import dataclass
 
 @dataclass
 class Problems():
-    id: int
     description: str
     sla: int
 
@@ -14,7 +13,7 @@ class ProblemsManager(Manager):
         self.DAO = ProblemsDBDAO(dbName)
     
     def register(self, problem: Problems) -> None:
-        self.DAO.insert([problem.id,problem.description,problem.sla])
+        self.DAO.insert([problem.description,problem.sla])
         
     def view(self, problemID: int) -> None:
         data = self.DAO.read(problemID)

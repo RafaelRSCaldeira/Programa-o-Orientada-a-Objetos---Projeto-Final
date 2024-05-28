@@ -4,7 +4,6 @@ from dataclasses import dataclass
 
 @dataclass
 class Calls():
-    id: int
     title: str
     description: str
     category: str
@@ -27,7 +26,7 @@ class CallsManager():
         self.DAO = CallsDBDAO(dbName)
 
     def open(self, call: Calls) -> None:
-        self.DAO.insert([call.id, call.title, call.description, call.category,
+        self.DAO.insert([call.title, call.description, call.category,
                          call.clientID, call.userID, call.status, call.openingDate,
                          call.closingDate, call.maxDate])
 
