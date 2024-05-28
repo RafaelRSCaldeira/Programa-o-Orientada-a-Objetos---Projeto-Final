@@ -5,6 +5,7 @@ from dataclasses import asdict
 
 @dataclass
 class Calls():
+    id: int
     title: str
     description: str
     category: str
@@ -54,10 +55,18 @@ class CallsManager():
                 Closing Date: {data['closingDate']}\n\
                 Max Date: {data['maxDate']}")
 
-    def update(self, callID: int, updateCall: Calls) -> None:
+    #Modificado para adicionar ID
+    def update(self, updateCall: Calls) -> None:
         updateData = asdict(updateCall)
-        self.DAO.update(callID, updateData)
+        del updateData["id"]
+        self.DAO.update(updateCall.id, updateData)
+
+    #Criado Metodo getByID
+    def getByID(self, callID: int) -> Calls|None:
+        data = self.DAO.read(callID)
+        if len(data) == 0:
+            return None
+        return Calls(data.get('id'), data.get('title'), data.get('description'), data.get('category'), data.get('clientID'), data.get('userID'), data.get('status'), data.get('openingDate'), data.get('closingDate'), data.get('maxDate'))
 
     def delete(self, callID: int) -> None:
         self.DAO.delete(callID)
-

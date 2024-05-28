@@ -6,6 +6,7 @@ from dataclasses import asdict
 
 @dataclass
 class Users():
+    id:int
     name: str
     email: str
     password: str
@@ -26,9 +27,11 @@ class UsersManager(Manager):
                 Email: {data['email']}\n\
                 Position: {data['position']}")
     
-    def update(self, userID: int, updateUser: Users) -> None:
+    #Modificado para adicionar o ID
+    def update(self,updateUser: Users) -> None:
         updateData = asdict(updateUser)
-        self.DAO.update(userID, updateData)
+        del updateData['id']
+        self.DAO.update(updateUser.id, updateData)
 
     def delete(self, userID: int) -> None:
         self.DAO.delete(userID)
@@ -39,7 +42,16 @@ class UsersManager(Manager):
             return False
         return True
 
+    #Modificado para se não houver um valido
     def getByEmailAndPassword(self, userEmail: str, userPassword: str) -> Users:
         data = self.DAO.getUserByEmailAndPassword(userEmail, userPassword)
+        if(len(data) == 0):
+           return None
         return Users(data.get('name'), data.get('email'), data.get('password'), data.get('position'))
 
+    #Modificado para caso não haja dados
+    def getByID(self, userID: int) -> Users|None:
+        data =  self.DAO.read(userID)
+        if(len(data) == 0):
+           return None
+        return Users(data.get('id'), data.get('name'), data.get('email'), data.get('password'), data.get('position'))

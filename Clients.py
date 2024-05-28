@@ -5,6 +5,7 @@ from dataclasses import asdict
 
 @dataclass
 class Clients():
+    id: int
     name: str
     email: str
     password: str
@@ -26,9 +27,11 @@ class ClientsManager(Manager):
                 Company: {data['company']}\n\
                 Phone: {data['phone']}")
     
-    def update(self, clientID: int, updateClient: Clients) -> None:
+    #Modificado para adicionar ID
+    def update(self, updateClient: Clients) -> None:
         updateData = asdict(updateClient)
-        self.DAO.update(clientID, updateData)
+        del updateClient['id']
+        self.DAO.update(updateClient.id, updateData)
 
     def delete(self, clientID: int) -> None:
         self.DAO.delete(clientID)
@@ -39,10 +42,16 @@ class ClientsManager(Manager):
             return False
         return True
 
+    #Modificado para caso não haja dados
     def getByEmailAndPassword(self, clientEmail: str, clientPassword: str) -> Clients:
         data = self.DAO.getClientByEmailAndPassword(clientEmail, clientPassword)
+        if(len(data) == 0):
+           return None
         return Clients(data.get('name'), data.get('email'), data.get('password'), data.get('company'), data.get('phone'))
     
-    def getByID(self, clientID: int) -> Clients:
+    #Modificado para caso não haja dados
+    def getByID(self, clientID: int) -> Clients|None:
         data =  self.DAO.read(clientID)
-        return Clients(data.get('name'), data.get('email'), data.get('password'), data.get('company'), data.get('phone'))
+        if(len(data) == 0):
+           return None
+        return Clients(data.get('id'), data.get('name'), data.get('email'), data.get('password'), data.get('company'), data.get('phone'))

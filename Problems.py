@@ -6,6 +6,7 @@ from dataclasses import asdict
 
 @dataclass
 class Problems():
+    id: int
     description: str
     sla: int
 
@@ -22,9 +23,18 @@ class ProblemsManager(Manager):
                 Description: {data['description']}\n\
                 SLA: {data['sla']}")
     
-    def update(self, problemID: int, updateProblem: Problems) -> None:
+    #Modificado para ID
+    def update(self, updateProblem: Problems) -> None:
         updateData = asdict(updateProblem)
-        self.DAO.update(problemID, updateData)
+        del updateData['id']
+        self.DAO.update(updateProblem.id, updateData)
 
     def delete(self, problemID: int) -> None:
         self.DAO.delete(problemID)
+    
+    #Criado getByID
+    def getByID(self, problemID: int) -> Problems|None:
+        data =  self.DAO.read(problemID)
+        if(len(data) == 0):
+           return None
+        return Problems(data.get('id'), data.get('description'), data.get('sla'))
