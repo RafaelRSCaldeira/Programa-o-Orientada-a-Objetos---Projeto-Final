@@ -63,3 +63,8 @@ def test_delete(clientsDAO):
     data = clientsDAO.read(clientID)
     assert data == {}
 
+def test_getClientByEmailAndPassword(clientsDAO):
+    clientEmail = 'client1@example.com'
+    clientPassword = 'password123'
+    clientData = clientsDAO.getClientByEmailAndPassword(clientEmail, clientPassword)
+    assert clientData == {'id': 1, 'name': "Client 1", 'email': "client1@example.com", 'password': "password123", 'company': "Company A", 'phone': "123456789"}
