@@ -95,9 +95,9 @@ class UsersDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            set_string = ', '.join([f"{key} = ?" for key in values.keys()])
-            update_query = f'''UPDATE User SET {set_string} WHERE id = ?'''
-            cursor.execute(update_query, (values['name'], values['email'], values['password'], values['position'], userID))
+            set_string = ', '.join([f"{k} = '{v}'" for k,v in values.items()])
+            update_query = f'''UPDATE User SET {set_string} WHERE id = {userID}'''
+            cursor.execute(update_query)
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to update the data. Error: {error}.")
@@ -206,9 +206,9 @@ class ClientsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            set_string = ', '.join([f"{key} = ?" for key in values.keys()])
-            update_query = f'''UPDATE Client SET {set_string} WHERE id = ?'''
-            cursor.execute(update_query, (values['name'], values['email'], values['company'], values['phone'], clientID))
+            set_string = ', '.join([f"{k} = '{v}'" for k,v in values.items()])
+            update_query = f'''UPDATE User SET {set_string} WHERE id = {clientID}'''
+            cursor.execute(update_query)
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to update the data. Error: {error}.")
@@ -294,9 +294,9 @@ class ProblemsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            set_string = ', '.join([f"{key} = ?" for key in values.keys()])
-            update_query = f'''UPDATE Problem SET {set_string} WHERE id = ?'''
-            cursor.execute(update_query, (values['sla'], values['description'], problemID))
+            set_string = ', '.join([f"{k} = '{v}'" for k,v in values.items()])
+            update_query = f'''UPDATE User SET {set_string} WHERE id = {problemID}'''
+            cursor.execute(update_query)
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to update the data. Error: {error}.")
@@ -394,13 +394,9 @@ class CallsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            set_string = ', '.join([f"{key} = ?" for key in values.keys()])
-            update_query = f'''UPDATE Call SET {set_string} WHERE id = ?'''
-            cursor.execute(update_query, (values['title'], values['description'],
-                                          values['category'], values['clientID'],
-                                          values['userID'], values['status'],
-                                          values['openingDate'], values['closingDate'],
-                                          values['maxDate'], callID))
+            set_string = ', '.join([f"{k} = '{v}'" for k,v in values.items()])
+            update_query = f'''UPDATE User SET {set_string} WHERE id = {callID}'''
+            cursor.execute(update_query)
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to update the data. Error: {error}.")
