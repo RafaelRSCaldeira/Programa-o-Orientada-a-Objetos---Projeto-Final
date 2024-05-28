@@ -4,7 +4,6 @@ from dataclasses import dataclass
 
 @dataclass
 class Clients():
-    id: int
     name: str
     email: str
     password: str
@@ -16,7 +15,7 @@ class ClientsManager(Manager):
         self.DAO = ClientsDBDAO(dbName)
     
     def register(self, client: Clients) -> None:
-        self.DAO.insert([client.id, client.name, client.email, client.company, client.phone])
+        self.DAO.insert([client.name, client.email, client.company, client.phone])
 
     def view(self, clientID: int) -> None:
         data = self.DAO.read(clientID)
@@ -31,4 +30,10 @@ class ClientsManager(Manager):
 
     def delete(self, clientID: int) -> None:
         self.DAO.delete(clientID)
+
+    def isValid(self, clientEmail: str, clientPassword: str) -> bool:
+        data = self.DAO.getClientByEmailAndPassword(clientEmail, clientPassword)
+        if len(data) == 0:
+            return False
+        return True
 
