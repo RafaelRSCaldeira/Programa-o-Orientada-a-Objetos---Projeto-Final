@@ -133,7 +133,7 @@ class MainWindowSpecial(MainWindow):
         elif self.selectedCategory.get() == 'problems':
             ProblemsAdder(self.window)
         elif self.selectedCategory.get() == 'calls':
-            pass
+            CallsAdder(self.window)
 
     def removeItem(self):
         if self.selectedCategory.get() == 'users':
@@ -199,7 +199,7 @@ class UserAdder():
                      self.emailEntry.get(),
                      self.passwordEntry.get(), 
                      self.positionEntry.get())
-        usersManager = UsersManager("users.db")
+        usersManager = UsersManager("manager.db")
         #Registrar o usuário no banco de dados se todos os campos foram preenchidos
         if user.id != '' and user.name != '' and user.email != '' and user.password != '' and user.position != '':
             usersManager.register(user)
@@ -241,7 +241,7 @@ class ClientAdder():
                      self.emailEntry.get(),
                      self.companyEntry.get(), 
                      self.phoneEntry.get())
-        clientsManager = ClientsManager('clients.db')
+        clientsManager = ClientsManager('manager.db')
         #Registrar o cliente no banco de dados se todos os campos foram preenchidos
         if client.id != '' and client.name != '' and client.email != '' and client.company != '' and client.phone != '':
             clientsManager.register(client)
@@ -279,7 +279,7 @@ class ProblemsAdder():
                      self.descriptionEntry.get(0.0, 'end').strip('\n'),
                      self.slaEntry.get(),
                      )
-        problemsManager = ProblemsManager('problems.db')
+        problemsManager = ProblemsManager('manager.db')
         #Registrar o problema no banco de dados se todos os campos foram preenchidos
         if problem.id != '' and problem.description != '' and problem.sla != '':
             problemsManager.register(problem)
@@ -326,7 +326,7 @@ class UserEditer():
         newEmail = self.emailEntry.get()
         newPassword = self.passwordEntry.get()
         newPosition = self.positionEntry.get()
-        usersManager = UsersManager("users.db")
+        usersManager = UsersManager("manager.db")
         #Registrar o usuário no banco de dados se todos os campos foram preenchidos
         if newName != '' and newEmail != '' and newPassword != '' and newPosition != '':
             usersManager.update(self.userId, {'name': newName, 'email': newEmail, 'password': newPassword, 'position': newPosition})
@@ -373,7 +373,7 @@ class ClientEditer():
         newEmail = self.emailEntry.get()
         newCompany = self.companyEntry.get()
         newPhone = self.phoneEntry.get()
-        clientsManager = ClientsManager("clients.db")
+        clientsManager = ClientsManager("manager.db")
         #Registrar o cliente no banco de dados se todos os campos foram preenchidos
         if newName != '' and newEmail != '' and newCompany != '' and newPhone != '':
             clientsManager.update(self.clientId, {'name': newName, 'email': newEmail, 'company': newCompany, 'phone': newPhone})
@@ -413,7 +413,7 @@ class ProblemsEditer():
         #Criar variáveis temporárias para armazenar as informações novas
         newSla = self.slaEntry.get()
         newDescription = self.descriptionEntry.get(0.0, 'end').strip('\n')
-        problemsManager = ProblemsManager("problems.db")
+        problemsManager = ProblemsManager("manager.db")
         #Registrar o cliente no banco de dados se todos os campos foram preenchidos
         if newSla != '' and newDescription != '':
             problemsManager.update(self.problemId, {'sla': newSla, 'description': newDescription})
@@ -428,7 +428,7 @@ class CallsEditer():
         self.window = Toplevel(parent)
         #Definir geometria padrão
         self.width = 400
-        self.height = 530
+        self.height = 635
         self.window.geometry(f"{self.width}x{self.height}")
         self.window.resizable(False, False)      
         self.window.title("Editar chamado")
@@ -459,16 +459,16 @@ class CallsEditer():
         self.idLabel.grid(column = 0, row = 0, pady = 20, padx = 20)
         self.titleEntry.grid(column = 0, row = 1, pady = 0, padx = 20)
         self.categoryEntry.grid(column = 0, row = 2, pady = 20, padx = 20)
-        self.statusEntry.grid(column = 0, row = 1, pady = 0, padx = 20)
-        self.clientIdEntry.grid(column = 0, row = 2, pady = 20, padx = 20)
-        self.userIdEntry.grid(column = 0, row = 1, pady = 0, padx = 20)
-        self.openingDateEntry.grid(column = 0, row = 2, pady = 20, padx = 20)
-        self.maxDateEntry.grid(column = 0, row = 1, pady = 0, padx = 20)
-        self.closingDateEntry.grid(column = 0, row = 2, pady = 20, padx = 20)
-        self.descriptionEntry.grid(column = 0, row = 2, pady = 0, padx = 20)
+        self.statusEntry.grid(column = 0, row = 3, pady = 0, padx = 20)
+        self.clientIdEntry.grid(column = 0, row = 4, pady = 20, padx = 20)
+        self.userIdEntry.grid(column = 0, row = 5, pady = 0, padx = 20)
+        self.openingDateEntry.grid(column = 0, row = 6, pady = 20, padx = 20)
+        self.maxDateEntry.grid(column = 0, row = 7, pady = 0, padx = 20)
+        self.closingDateEntry.grid(column = 0, row = 8, pady = 20, padx = 20)
+        self.descriptionEntry.grid(column = 0, row = 9, pady = 0, padx = 20)
         #Criar e posicionar o botão
         self.editButton = CTkButton(self.window, text = 'Alterar', command = self.edit)
-        self.editButton.grid(column = 0, row = 5, pady = 40)
+        self.editButton.grid(column = 0, row = 10, pady = 40)
  
     def edit(self):
         #Criar variáveis temporárias para armazenar as informações novas
@@ -481,7 +481,7 @@ class CallsEditer():
         newMaxDate = self.maxDateEntry.get()
         newClosingDate = self.closingDateEntry.get()
         newDescription = self.descriptionEntry.get(0.0, 'end').strip('\n')
-        callsManager = CallsManager("problems.db")
+        callsManager = CallsManager("manager.db")
         #Registrar o cliente no banco de dados se todos os campos foram preenchidos
         if newTitle != '' and newDescription != ''and newCategory != ''and newStatus != ''and newClientId != ''and newUserId != ''and newOpeningDate != ''and newMaxDate != ''and newClosingDate != '':
             callsManager.update(self.callId, {'title': newTitle, 'description': newDescription,
@@ -601,6 +601,63 @@ class ProblemVisualizer():
         self.slaLabel = CTkLabel(self.window, justify = 'center', text = f'SLA: {self.sla}', text_color='Black', font=("Arial", 16))
         self.slaLabel.pack()
 
+class CallsAdder():
+    def __init__(self, parent) -> None:
+        #Criar a janela
+        self.window = Toplevel(parent)
+        #Definir geometria padrão
+        self.width = 400
+        self.height = 635
+        self.window.geometry(f"{self.width}x{self.height}")
+        self.window.resizable(False, False)      
+        self.window.title("Criar chamado")
+        #Criar as entradas
+        self.idEntry = CTkEntry(self.window, placeholder_text="ID Chamado", width = 360, fg_color = "White", text_color = "Black")
+        self.titleEntry = CTkEntry(self.window, placeholder_text="Titulo", width = 360, fg_color = "White", text_color = "Black")
+        self.categoryEntry = CTkEntry(self.window, placeholder_text="Categoria", width = 360, fg_color = "White", text_color = "Black")
+        self.statusEntry = CTkEntry(self.window, placeholder_text="Status", width = 360, fg_color = "White", text_color = "Black")
+        self.clientIdEntry = CTkEntry(self.window, placeholder_text="ID Cliente", width = 360, fg_color = "White", text_color = "Black")
+        self.userIdEntry = CTkEntry(self.window, placeholder_text="ID Usuário", width = 360, fg_color = "White", text_color = "Black")
+        self.openingDateEntry = CTkEntry(self.window, placeholder_text="Data", width = 360, fg_color = "White", text_color = "Black")
+        self.maxDateEntry = CTkEntry(self.window, placeholder_text="Data Máxima", width = 360, fg_color = "White", text_color = "Black")
+        self.closingDateEntry = CTkEntry(self.window, placeholder_text="Data de fechamento", width = 360, fg_color = "White", text_color = "Black")
+        self.descriptionEntry = CTkTextbox(self.window, width = 360, fg_color = "White", text_color = "Black", height = 100)
+        self.descriptionEntry.insert('insert', "Descrição")
+        #Posicionar as entradas
+        self.idEntry.grid(column = 0, row = 0, pady = 20, padx = 20)
+        self.titleEntry.grid(column = 0, row = 1, pady = 0, padx = 20)
+        self.categoryEntry.grid(column = 0, row = 2, pady = 20, padx = 20)
+        self.statusEntry.grid(column = 0, row = 3, pady = 0, padx = 20)
+        self.clientIdEntry.grid(column = 0, row = 4, pady = 20, padx = 20)
+        self.userIdEntry.grid(column = 0, row = 5, pady = 0, padx = 20)
+        self.openingDateEntry.grid(column = 0, row = 6, pady = 20, padx = 20)
+        self.maxDateEntry.grid(column = 0, row = 7, pady = 0, padx = 20)
+        self.closingDateEntry.grid(column = 0, row = 8, pady = 20, padx = 20)
+        self.descriptionEntry.grid(column = 0, row = 9, pady = 0, padx = 20)
+        #Criar e posicionar o botão
+        self.editButton = CTkButton(self.window, text = 'Criar', command = self.add)
+        self.editButton.grid(column = 0, row = 10, pady = 40)
+
+    def add(self):
+        #Criar um objeto usuário à partir dos dados fornecidos
+        user = Calls(self.idEntry.get(),
+                     self.titleEntry.get(),
+                     self.descriptionEntry.get(0.0, 'end').strip('\n'),
+                     self.categoryEntry.get(),
+                     self.clientIdEntry.get(),
+                     self.userIdEntry.get(),
+                     self.statusEntry.get(),
+                     self.openingDateEntry.get(),
+                     self.closingDateEntry.get(),
+                     self.maxDateEntry.get())
+        callsManager = CallsManager("manager.db")
+        #Registrar o usuário no banco de dados se todos os campos foram preenchidos
+        if user.id != '' and user.title != '' and user.description != '' and user.category != '' and user.clientID != '' and user.userID != '' and user.status != '' and user.openingDate != '' and user.closingDate != '' and user.maxDate != '':
+            callsManager.open(user)
+            self.window.withdraw()
+        else:
+            #Criar mensagem de erro
+            messagebox.showwarning('Inválido', "Todos os campos devem ser preenchidos.")     
 
 class CallVisualizer():
     '''Janela para visualizar um Chamado'''
@@ -711,7 +768,7 @@ class MainWindowRegular(MainWindow):#
             self.listbox.insert("end", "item #%s" % i)
 
     def openCreateCall(self):
-        pass
+        CallsAdder(self.window)
 
     def visualizeCall(self):
         CallVisualizer(self.window, "Nada")
@@ -759,7 +816,7 @@ class StartScreen:
         self.logInButton.place(relx=0.5, rely=0.7, anchor=CENTER)
     
     def _logIn(self):
-        usersManager = UsersManager("users.db")
+        usersManager = UsersManager("manager.db")
         #Pegar os textos das entradas Login e Senha
         login = self.loginField.get()
         password = self.passwordField.get()
