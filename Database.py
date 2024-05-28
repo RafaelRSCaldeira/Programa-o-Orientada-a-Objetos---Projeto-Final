@@ -234,6 +234,27 @@ class ClientsDBDAO(Database):
             if connection:
                 connection.close()
 
+    def getClientByEmailAndPassword(self, clientEmail: str, clientPassword: str) -> dict:
+        connection = None
+        try:
+            connection = sqlite3.connect(self.DBName)
+            cursor = connection.cursor()
+            cursor.execute('''SELECT * FROM Client WHERE email = ? AND password = ?''', (clientEmail, clientPassword))
+            result = cursor.fetchone()
+            if result:
+                return {'id': result[0], 'name': result[1], 'email': result[2], 'password': result[3], 'company': result[4], 'phone': result[5]}
+            else:
+                return dict()
+        except sqlite3.Error as error:
+            print(f"Unable to fetch the data. Error: {error}.")
+            return dict()
+        except:
+            print("An unknown error has occurred.")
+            return dict()
+        finally:
+            if connection:
+                connection.close()
+
 class ProblemsDBDAO(Database):
     def create(self) -> None:
         connection = None
