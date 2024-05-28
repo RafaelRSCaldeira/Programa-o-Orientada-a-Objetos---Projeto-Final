@@ -74,3 +74,8 @@ def test_isValid(usersManager):
     assert not usersManager.isValid("us@example.com", "password123")
     assert not usersManager.isValid("user1@example.com", "password")
     assert not usersManager.isValid("us@example.com", "password")
+
+def test_getByEmailAndPassword(usersManager):
+    data = usersManager.getByEmailAndPassword("user1@example.com", "password123")
+    assert data == {'id': 1, 'name': 'User 1', 'email': 'user1@example.com', 'password': 'password123', 'position': 'Manager'}
+    assert usersManager.getByEmailAndPassword("user2@example.com", "password") == {}
