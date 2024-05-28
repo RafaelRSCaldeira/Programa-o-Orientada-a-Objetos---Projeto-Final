@@ -106,7 +106,7 @@ class UsersDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''DELETE FROM User WHERE id = ?''', (userID))
+            cursor.execute(f'''DELETE FROM User WHERE id = {userID}''')
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to delete the data. Error: {error}.")
@@ -210,7 +210,7 @@ class ClientsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''DELETE FROM Client WHERE id = ?''', (clientID))
+            cursor.execute(f'''DELETE FROM Client WHERE id = {clientID}''')
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to delete the data. Error: {error}.")
@@ -292,7 +292,7 @@ class ProblemsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''DELETE FROM Problem WHERE id = ?''', (problemID))
+            cursor.execute(f'''DELETE FROM Problem WHERE id = {problemID}''')
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to delete the data. Error: {error}.")
@@ -393,7 +393,7 @@ class CallsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''DELETE FROM Call WHERE id = ?''', (callID))
+            cursor.execute(f'''DELETE FROM Call WHERE id = {callID}''')
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to delete the data. Error: {error}.")
