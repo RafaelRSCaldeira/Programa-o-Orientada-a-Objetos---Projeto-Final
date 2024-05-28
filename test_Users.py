@@ -40,8 +40,8 @@ def test_register(usersManager):
             conn.close()
 
 def test_update(usersManager):
-    newData = {'name': 'User Updated', 'email': 'updated@example.com', 'password': 'newpassword', 'position': 'Employee'}
-    usersManager.update(1, newData)
+    newUser = Users('User Updated', 'updated@example.com', 'newpassword', 'Employee')
+    usersManager.update(1, newUser)
     conn = None
     try:
         conn = sqlite3.connect(databaseName)
@@ -76,6 +76,6 @@ def test_isValid(usersManager):
     assert not usersManager.isValid("us@example.com", "password")
 
 def test_getByEmailAndPassword(usersManager):
-    data = usersManager.getByEmailAndPassword("user1@example.com", "password123")
-    assert data == {'id': 1, 'name': 'User 1', 'email': 'user1@example.com', 'password': 'password123', 'position': 'Manager'}
-    assert usersManager.getByEmailAndPassword("user2@example.com", "password") == {}
+    user = usersManager.getByEmailAndPassword("user1@example.com", "password123")
+    assert user == Users("User 1", "user1@example.com", "password123", "Manager")
+    assert usersManager.getByEmailAndPassword("user2@example.com", "password") == Users(None, None, None, None)

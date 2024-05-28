@@ -2,6 +2,7 @@ from Database import *
 from Manager import Manager
 from datetime import timedelta
 from dataclasses import dataclass
+from dataclasses import asdict
 
 @dataclass
 class Problems():
@@ -21,8 +22,9 @@ class ProblemsManager(Manager):
                 Description: {data['description']}\n\
                 SLA: {data['sla']}")
     
-    def update(self, problemID: int, updateData: dict) -> None:
+    def update(self, problemID: int, updateProblem: Problems) -> None:
+        updateData = asdict(updateProblem)
         self.DAO.update(problemID, updateData)
 
-    def delete(self, problemID: int):
+    def delete(self, problemID: int) -> None:
         self.DAO.delete(problemID)

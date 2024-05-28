@@ -1,6 +1,7 @@
 from Database import *
 from Manager import Manager
 from dataclasses import dataclass
+from dataclasses import asdict
 
 @dataclass
 class Clients():
@@ -25,7 +26,8 @@ class ClientsManager(Manager):
                 Company: {data['company']}\n\
                 Phone: {data['phone']}")
     
-    def update(self, clientID: int, updateData: dict) -> None:
+    def update(self, clientID: int, updateClient: Clients) -> None:
+        updateData = asdict(updateClient)
         self.DAO.update(clientID, updateData)
 
     def delete(self, clientID: int) -> None:
@@ -37,8 +39,10 @@ class ClientsManager(Manager):
             return False
         return True
 
-    def getByEmailAndPassword(self, clientEmail: str, clientPassword: str) -> dict:
-        return self.DAO.getClientByEmailAndPassword(clientEmail, clientPassword)
+    def getByEmailAndPassword(self, clientEmail: str, clientPassword: str) -> Clients:
+        data = self.DAO.getClientByEmailAndPassword(clientEmail, clientPassword)
+        return Clients(data.get('name'), data.get('email'), data.get('password'), data.get('company'), data.get('phone'))
     
-    def getByID(self, clientID: int) -> dict:
-        return self.DAO.read(clientID)
+    def getByID(self, clientID: int) -> Clients:
+        data =  self.DAO.read(clientID)
+        return Clients(data.get('name'), data.get('email'), data.get('password'), data.get('company'), data.get('phone'))

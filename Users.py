@@ -1,6 +1,7 @@
 from Database import *
 from Manager import Manager
 from dataclasses import dataclass
+from dataclasses import asdict
 
 
 @dataclass
@@ -25,7 +26,8 @@ class UsersManager(Manager):
                 Email: {data['email']}\n\
                 Position: {data['position']}")
     
-    def update(self, userID: int, updateData: dict) -> None:
+    def update(self, userID: int, updateUser: Users) -> None:
+        updateData = asdict(updateUser)
         self.DAO.update(userID, updateData)
 
     def delete(self, userID: int) -> None:
@@ -37,6 +39,7 @@ class UsersManager(Manager):
             return False
         return True
 
-    def getByEmailAndPassword(self, userEmail: str, userPassword: str) -> dict:
-        return self.DAO.getUserByEmailAndPassword(userEmail, userPassword)
+    def getByEmailAndPassword(self, userEmail: str, userPassword: str) -> Users:
+        data = self.DAO.getUserByEmailAndPassword(userEmail, userPassword)
+        return Users(data.get('name'), data.get('email'), data.get('password'), data.get('position'))
 

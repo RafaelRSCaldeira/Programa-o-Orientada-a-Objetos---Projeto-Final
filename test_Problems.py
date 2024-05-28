@@ -32,7 +32,7 @@ def test_register(problemsManager):
         conn = sqlite3.connect(databaseName)
         cursor = conn.cursor()
         cursor.execute('''SELECT * FROM Problem WHERE ID = 2''')
-        assert cursor.fetchone() == (2, 'Server down', '2')
+        assert cursor.fetchone() == (2, '2', 'Server down')
     except:
         assert False
     finally:
@@ -40,8 +40,8 @@ def test_register(problemsManager):
             conn.close()
 
 def test_update(problemsManager):
-    newData = {'description': 'License Expired', 'sla': 1}
-    problemsManager.update(1, newData)
+    newProblem = Problems('License Expired', 1)
+    problemsManager.update(1, newProblem)
     conn = None
     try:
         conn = sqlite3.connect(databaseName)

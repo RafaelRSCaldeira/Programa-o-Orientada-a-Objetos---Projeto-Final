@@ -40,8 +40,8 @@ def test_register(clientsManager):
             conn.close()
 
 def test_update(clientsManager):
-    newData = {'name': 'Client Updated', 'email': 'updated@example.com', 'password': 'newpassword', 'company': 'New Company'}
-    clientsManager.update(1, newData)
+    newClient = Clients('Client Updated', 'updated@example.com', 'newpassword', 'New Company', '123456789')
+    clientsManager.update(1, newClient)
     conn = None
     try:
         conn = sqlite3.connect(databaseName)
@@ -76,10 +76,11 @@ def test_isValid(clientsManager):
     assert not clientsManager.isValid("cl@example.com", "password")
 
 def test_getByEmailAndPassword(clientsManager):
-    data = clientsManager.getByEmailAndPassword("client1@example.com", "password123")
-    assert data == {'id': 1, 'name': 'Client 1', 'email': 'client1@example.com', 'password': 'password123', 'company': 'Company A', 'phone': '123456789'}
-    assert clientsManager.getByEmailAndPassword("client2@example.com", "password") == {}
+    client = clientsManager.getByEmailAndPassword("client1@example.com", "password123")
+    assert client == Clients("Client 1", "client1@example.com", "password123", "Company A", "123456789")
+    assert clientsManager.getByEmailAndPassword("client2@example.com", "password") == Clients(None, None, None, None, None)
 
 def test_getByID(clientsManager):
-    assert clientsManager.getByID(1) == {'id': 1, 'name': 'Client 1', 'email': 'client1@example.com', 'password': 'password123', 'company': 'Company A', 'phone': '123456789'}
-    assert clientsManager.getByID(2) == {}
+    client = clientsManager.getByID(1)
+    assert client == Clients("Client 1", "client1@example.com", "password123", "Company A", "123456789")
+    assert clientsManager.getByID(2) == Clients(None, None, None, None, None)

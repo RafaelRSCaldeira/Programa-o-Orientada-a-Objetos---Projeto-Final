@@ -1,6 +1,7 @@
 import datetime
 from Database import CallsDBDAO
 from dataclasses import dataclass
+from dataclasses import asdict
 
 @dataclass
 class Calls():
@@ -53,7 +54,8 @@ class CallsManager():
                 Closing Date: {data['closingDate']}\n\
                 Max Date: {data['maxDate']}")
 
-    def update(self, callID: int, updateData: dict) -> None:
+    def update(self, callID: int, updateCall: Calls) -> None:
+        updateData = asdict(updateCall)
         self.DAO.update(callID, updateData)
 
     def delete(self, callID: int) -> None:
