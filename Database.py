@@ -39,7 +39,7 @@ class UsersDBDAO(Database):
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
             cursor.execute('''CREATE TABLE IF NOT EXISTS User 
-            (id INT PRIMARY KEY, 
+            (id INTEGER PRIMARY KEY AUTOINCREMENT, 
             name VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
@@ -58,8 +58,8 @@ class UsersDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute(f'''INSERT INTO User (id, name, email, password, position)
-            VALUES (?, ?, ?, ?, ?)''', (values))
+            cursor.execute(f'''INSERT INTO User (name, email, password, position)
+            VALUES (?, ?, ?, ?)''', (values))
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to insert data. Error: {error}.")
@@ -150,7 +150,7 @@ class ClientsDBDAO(Database):
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
             cursor.execute('''CREATE TABLE IF NOT EXISTS Client 
-            (id INT PRIMARY KEY, 
+            (id INTEGER PRIMARY KEY AUTOINCREMENT, 
             name VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             company VARCHAR(255) NOT NULL,
@@ -169,8 +169,8 @@ class ClientsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''INSERT INTO Client (id, name, email, company, phone)
-            VALUES (?, ?, ?, ?, ?)''', (values[0], values[1], values[2], values[3], values[4]))
+            cursor.execute('''INSERT INTO Client (name, email, company, phone)
+            VALUES (?, ?, ?, ?)''', (values))
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to insert data. Error: {error}.")
@@ -207,7 +207,7 @@ class ClientsDBDAO(Database):
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
             set_string = ', '.join([f"{k} = '{v}'" for k,v in values.items()])
-            update_query = f'''UPDATE User SET {set_string} WHERE id = {clientID}'''
+            update_query = f'''UPDATE Client SET {set_string} WHERE id = {clientID}'''
             cursor.execute(update_query)
             connection.commit()
         except sqlite3.Error as error:
@@ -240,7 +240,7 @@ class ProblemsDBDAO(Database):
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
             cursor.execute('''CREATE TABLE IF NOT EXISTS Problem 
-            (id INT PRIMARY KEY,
+            (id INTEGER PRIMARY KEY AUTOINCREMENT,
             sla VARCHAR(255) NOT NULL, 
             description VARCHAR(255) NOT NULL)''')
             connection.commit()
@@ -257,8 +257,8 @@ class ProblemsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''INSERT INTO Problem (id, sla, description)
-            VALUES (?, ?, ?)''', (values[0], values[1], values[2]))
+            cursor.execute('''INSERT INTO Problem (sla, description)
+            VALUES (?, ?)''', (values))
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to insert data. Error: {error}.")
@@ -295,7 +295,7 @@ class ProblemsDBDAO(Database):
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
             set_string = ', '.join([f"{k} = '{v}'" for k,v in values.items()])
-            update_query = f'''UPDATE User SET {set_string} WHERE id = {problemID}'''
+            update_query = f'''UPDATE Problem SET {set_string} WHERE id = {problemID}'''
             cursor.execute(update_query)
             connection.commit()
         except sqlite3.Error as error:
@@ -328,7 +328,7 @@ class CallsDBDAO(Database):
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
             cursor.execute('''CREATE TABLE IF NOT EXISTS Call 
-            (id INT PRIMARY KEY,
+            (id INTEGER PRIMARY KEY AUTOINCREMENT,
             title VARCHAR(255) NOT NULL,
             description VARCHAR(255) NOT NULL,
             category VARCHAR(255) NOT NULL,
@@ -352,10 +352,9 @@ class CallsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''INSERT INTO Call (id, title, description, 
+            cursor.execute('''INSERT INTO Call (title, description, 
             category, clientID, userID, status, openingDate, closingDate, maxDate)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', (values[0], values[1], values[2],
-            values[3], values[4], values[5], values[6], values[7], values[8], values[9]))
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', (values))
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to insert data. Error: {error}.")
@@ -395,7 +394,7 @@ class CallsDBDAO(Database):
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
             set_string = ', '.join([f"{k} = '{v}'" for k,v in values.items()])
-            update_query = f'''UPDATE User SET {set_string} WHERE id = {callID}'''
+            update_query = f'''UPDATE Call SET {set_string} WHERE id = {callID}'''
             cursor.execute(update_query)
             connection.commit()
         except sqlite3.Error as error:
