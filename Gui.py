@@ -137,13 +137,21 @@ class MainWindowSpecial(MainWindow):
 
     def removeItem(self):
         if self.selectedCategory.get() == 'users':
-            pass
+            listBoxAnchor = self.listbox.get(ANCHOR)
+            self.listbox.delete(ANCHOR)
+            print(f'{listBoxAnchor} removido')
         elif self.selectedCategory.get() == 'clients':
-            pass
+            listBoxAnchor = self.listbox.get(ANCHOR)
+            self.listbox.delete(ANCHOR)
+            print(f'{listBoxAnchor} removido')
         elif self.selectedCategory.get() == 'problems':
-            pass
+            listBoxAnchor = self.listbox.get(ANCHOR)
+            self.listbox.delete(ANCHOR)
+            print(f'{listBoxAnchor} removido')
         elif self.selectedCategory.get() == 'calls':
-            pass
+            listBoxAnchor = self.listbox.get(ANCHOR)
+            self.listbox.delete(ANCHOR)
+            print(f'{listBoxAnchor} removido')
 
     def visualizeItem(self):
         if self.selectedCategory.get() == 'users':
