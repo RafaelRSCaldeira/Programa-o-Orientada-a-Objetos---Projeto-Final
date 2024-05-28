@@ -15,7 +15,7 @@ databaseName = "callsTest.db"
 def callsDAO():
     silentRemove(databaseName)
     callsDAO = CallsDBDAO(databaseName)
-    callData = [1, 'Server Issue', 'Server is down', 'Technical', 1, 1, 'Open', '2024-05-27', '2024-05-28', '2024-05-29']
+    callData = ['Server Issue', 'Server is down', 'Technical', 1, 1, 'Open', '2024-05-27', '2024-05-28', '2024-05-29']
     callsDAO.insert(callData)
     yield callsDAO
     silentRemove(databaseName)
@@ -40,14 +40,14 @@ def test_create(callsDAO):
     assert table_info[9][1] == 'maxDate'
 
 def test_insert(callsDAO):
-    callData = [2, 'Network Issue', 'Network is slow', 'Technical', 2, 2, 'Open', '2024-05-27', '2024-05-28', '2024-05-29']
+    callData = ['Network Issue', 'Network is slow', 'Technical', 2, 2, 'Open', '2024-05-27', '2024-05-28', '2024-05-29']
     callsDAO.insert(callData)
     connection = sqlite3.connect(databaseName)
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM Call WHERE id = 2")
     data = cursor.fetchone()
     connection.close()
-    assert data == tuple(callData)
+    assert data == (2, 'Network Issue', 'Network is slow', 'Technical', 2, 2, 'Open', '2024-05-27', '2024-05-28', '2024-05-29')
 
 def test_read(callsDAO):
     callID = 1

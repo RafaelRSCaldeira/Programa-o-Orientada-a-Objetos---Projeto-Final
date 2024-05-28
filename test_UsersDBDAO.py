@@ -15,7 +15,7 @@ databaseName = "usersTest.db"
 def usersDAO():
     silentRemove(databaseName)
     usersDAO = UsersDBDAO(databaseName)
-    userData = [1, 'User 1', 'user1@example.com', 'password123', 'Manager']
+    userData = ['User 1', 'user1@example.com', 'password123', 'Manager']
     usersDAO.insert(userData)
     yield usersDAO
     silentRemove(databaseName)
@@ -35,14 +35,14 @@ def test_create(usersDAO):
     assert table_info[4][1] == 'position'
 
 def test_insert(usersDAO):
-    userData = [1, 'User 1', 'user1@example.com', 'password123', 'Manager']
+    userData = ['User 2', 'user2@example.com', 'password123', 'Manager']
     usersDAO.insert(userData)
     connection = sqlite3.connect(databaseName)
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM User WHERE id = 1")
+    cursor.execute("SELECT * FROM User WHERE id = 2")
     data = cursor.fetchone()
     connection.close()
-    assert data == tuple(userData)
+    assert data == (2, 'User 2', 'user2@example.com', 'password123', 'Manager')
 
 def test_read(usersDAO):
     userID = 1
@@ -51,10 +51,10 @@ def test_read(usersDAO):
 
 def test_update(usersDAO):
     userID = 1
-    newData = {'id': userID, 'name': 'User Updated', 'email': 'updated@example.com', 'password': 'newpassword', 'position': 'Employee'}
+    newData = {'name': 'User Updated', 'email': 'updated@example.com', 'password': 'newpassword', 'position': 'Employee'}
     usersDAO.update(userID, newData)
     userData = usersDAO.read(userID)
-    assert userData == newData
+    assert userData == {'id': 1, 'name': 'User Updated', 'email': 'updated@example.com', 'password': 'newpassword', 'position': 'Employee'}
 
 def test_delete(usersDAO):
     userID = 1

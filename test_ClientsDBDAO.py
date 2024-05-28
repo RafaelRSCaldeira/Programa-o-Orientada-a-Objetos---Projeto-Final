@@ -15,7 +15,7 @@ databaseName = "clientsTest.db"
 def clientsDAO():
     silentRemove(databaseName)
     clientsDAO = ClientsDBDAO(databaseName)
-    clientData = [1, 'Client 1', 'client1@example.com', 'Company A', '123456789']
+    clientData = ['Client 1', 'client1@example.com', 'Company A', '123456789']
     clientsDAO.insert(clientData)
     yield clientsDAO
     silentRemove(databaseName)
@@ -35,14 +35,14 @@ def test_create(clientsDAO):
     assert table_info[4][1] == 'phone'
 
 def test_insert(clientsDAO):
-    clientData = [2, 'Client 2', 'client2@example.com', 'Company B', '987654321']
+    clientData = ['Client 2', 'client2@example.com', 'Company B', '987654321']
     clientsDAO.insert(clientData)
     connection = sqlite3.connect(databaseName)
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM Client WHERE id = 2")
     data = cursor.fetchone()
     connection.close()
-    assert data == tuple(clientData)
+    assert data == (2, 'Client 2', 'client2@example.com', 'Company B', '987654321')
 
 def test_read(clientsDAO):
     clientID = 1

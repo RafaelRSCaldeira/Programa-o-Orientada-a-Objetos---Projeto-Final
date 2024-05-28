@@ -15,7 +15,7 @@ databaseName = "problemsTest.db"
 def problemsDAO():
     silentRemove(databaseName)
     problemsDAO = ProblemsDBDAO(databaseName)
-    problemData = [1, '2 hours', 'Server down']
+    problemData = ['2 hours', 'Server down']
     problemsDAO.insert(problemData)
     yield problemsDAO
     silentRemove(databaseName)
@@ -33,14 +33,14 @@ def test_create(problemsDAO):
     assert table_info[2][1] == 'description'
 
 def test_insert(problemsDAO):
-    problemData = [2, '1 hour', 'Network issue']
+    problemData = ['1 hour', 'Network issue']
     problemsDAO.insert(problemData)
     connection = sqlite3.connect(databaseName)
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM Problem WHERE id = 2")
     data = cursor.fetchone()
     connection.close()
-    assert data == tuple(problemData)
+    assert data == (2, '1 hour', 'Network issue')
 
 def test_read(problemsDAO):
     problemID = 1
