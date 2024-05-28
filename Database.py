@@ -144,7 +144,7 @@ class UsersDBDAO(Database):
                 connection.close()
 
     #Adicionado getAllIds
-    def getAllIds(self):
+    def getAllIds(self) -> list:
         connection = None
         try:
             connection = sqlite3.connect(self.DBName)
@@ -278,7 +278,7 @@ class ClientsDBDAO(Database):
                 connection.close()
 
     #Adicionado getAllIds
-    def getAllIds(self):
+    def getAllIds(self) -> list:
         connection = None
         try:
             connection = sqlite3.connect(self.DBName)
@@ -388,7 +388,7 @@ class ProblemsDBDAO(Database):
                 connection.close()
 
     #Adicionado getAllIds
-    def getAllIds(self):
+    def getAllIds(self) -> list:
         connection = None
         try:
             connection = sqlite3.connect(self.DBName)
@@ -509,7 +509,7 @@ class CallsDBDAO(Database):
                 connection.close()
 
     #Adicionado getAllIds
-    def getAllIds(self):
+    def getAllIds(self) -> list:
         connection = None
         try:
             connection = sqlite3.connect(self.DBName)
