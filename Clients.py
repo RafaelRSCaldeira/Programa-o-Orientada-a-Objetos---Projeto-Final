@@ -37,3 +37,5 @@ class ClientsManager(Manager):
             return False
         return True
 
+    def getByEmailAndPassword(self, clientEmail: str, clientPassword: str) -> dict:
+        return self.DAO.getClientByEmailAndPassword(clientEmail, clientPassword)
