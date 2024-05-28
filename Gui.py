@@ -318,7 +318,7 @@ class StartScreen:
         self.logInButton.place(relx=0.5, rely=0.7, anchor=CENTER)
     
     def _logIn(self):
-        usersManager = UsersManager()
+        usersManager = UsersManager("users.db")
         #Pegar os textos das entradas Login e Senha
         login = self.loginField.get()
         password = self.passwordField.get()
