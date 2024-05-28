@@ -95,7 +95,8 @@ class UsersDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            update_query = '''UPDATE User SET name = ?, email = ?, password = ?, position = ? WHERE id = ?'''
+            set_string = ', '.join([f"{key} = ?" for key in values.keys()])
+            update_query = f'''UPDATE User SET {set_string} WHERE id = ?'''
             cursor.execute(update_query, (values['name'], values['email'], values['password'], values['position'], userID))
             connection.commit()
         except sqlite3.Error as error:
@@ -205,7 +206,8 @@ class ClientsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            update_query = '''UPDATE Client SET name = ?, email = ?, company = ?, phone = ? WHERE id = ?'''
+            set_string = ', '.join([f"{key} = ?" for key in values.keys()])
+            update_query = f'''UPDATE Client SET {set_string} WHERE id = ?'''
             cursor.execute(update_query, (values['name'], values['email'], values['company'], values['phone'], clientID))
             connection.commit()
         except sqlite3.Error as error:
@@ -292,7 +294,8 @@ class ProblemsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            update_query = '''UPDATE Problem SET sla = ?, description = ? WHERE id = ?'''
+            set_string = ', '.join([f"{key} = ?" for key in values.keys()])
+            update_query = f'''UPDATE Problem SET {set_string} WHERE id = ?'''
             cursor.execute(update_query, (values['sla'], values['description'], problemID))
             connection.commit()
         except sqlite3.Error as error:
@@ -391,10 +394,8 @@ class CallsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            update_query = '''UPDATE Call SET title = ?,
-            description = ?, category = ?, clientID = ?,
-            userID = ?, status = ?, openingDate = ?, closingDate = ?,
-            maxDate = ? WHERE id = ?'''
+            set_string = ', '.join([f"{key} = ?" for key in values.keys()])
+            update_query = f'''UPDATE Call SET {set_string} WHERE id = ?'''
             cursor.execute(update_query, (values['title'], values['description'],
                                           values['category'], values['clientID'],
                                           values['userID'], values['status'],
