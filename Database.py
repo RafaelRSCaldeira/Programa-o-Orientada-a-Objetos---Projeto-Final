@@ -71,7 +71,7 @@ class UsersDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''SELECT * FROM User WHERE id = ?''', (userID))
+            cursor.execute(f'''SELECT * FROM User WHERE id = {userID}''')
             result = cursor.fetchone()
             if result:
                 return {'id': result[0], 'name': result[1], 'email': result[2], 'password': result[3], 'position': result[4]}
@@ -175,7 +175,7 @@ class ClientsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''SELECT * FROM Client WHERE id = ?''', (clientID))
+            cursor.execute(f'''SELECT * FROM Client WHERE id = {clientID}''')
             result = cursor.fetchone()
             if result:
                 return {'id': result[0], 'name': result[1], 'email': result[2], 'company': result[3], 'phone': result[4]}
@@ -257,7 +257,7 @@ class ProblemsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''SELECT * FROM Problem WHERE id = ?''', (problemID))
+            cursor.execute(f'''SELECT * FROM Problem WHERE id = {problemID}''')
             result = cursor.fetchone()
             if result:
                 return {'id': result[0], 'sla': result[1], 'description': result[2]}
@@ -348,7 +348,7 @@ class CallsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''SELECT * FROM Call WHERE id = ?''', (callID))
+            cursor.execute(f'''SELECT * FROM Call WHERE id = {callID}''')
             result = cursor.fetchone()
             if result:
                 return {'id': result[0], 'title': result[1], 'description': result[2],
