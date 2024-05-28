@@ -34,6 +34,7 @@ class Database(ABC):
 
 class UsersDBDAO(Database):
     def create(self) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -53,6 +54,7 @@ class UsersDBDAO(Database):
                 connection.close()
     
     def insert(self, values: list) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -68,6 +70,7 @@ class UsersDBDAO(Database):
                 connection.close()
 
     def read(self, userID: int) -> dict:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -88,6 +91,7 @@ class UsersDBDAO(Database):
                 connection.close()
 
     def update(self, userID: int, values: dict) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -103,6 +107,7 @@ class UsersDBDAO(Database):
                 connection.close()
     
     def delete(self, userID: int) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -117,6 +122,7 @@ class UsersDBDAO(Database):
                 connection.close()
 
     def getUserByEmailAndPassword(self, userEmail: str, userPassword: str) -> dict:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -138,6 +144,7 @@ class UsersDBDAO(Database):
 
 class ClientsDBDAO(Database):
     def create(self) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -157,6 +164,7 @@ class ClientsDBDAO(Database):
                 connection.close()
     
     def insert(self, values: list) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -172,6 +180,7 @@ class ClientsDBDAO(Database):
                 connection.close()
 
     def read(self, clientID: int) -> dict:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -192,6 +201,7 @@ class ClientsDBDAO(Database):
                 connection.close()
     
     def update(self, clientID: int, values: dict) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -207,6 +217,7 @@ class ClientsDBDAO(Database):
                 connection.close()
 
     def delete(self, clientID: int) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -222,6 +233,7 @@ class ClientsDBDAO(Database):
 
 class ProblemsDBDAO(Database):
     def create(self) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -239,6 +251,7 @@ class ProblemsDBDAO(Database):
                 connection.close()
     
     def insert(self, values: list) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -254,6 +267,7 @@ class ProblemsDBDAO(Database):
                 connection.close()
     
     def read(self, problemID: int) -> dict:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -274,6 +288,7 @@ class ProblemsDBDAO(Database):
                 connection.close()
     
     def update(self, problemID: int, values: dict) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -289,6 +304,7 @@ class ProblemsDBDAO(Database):
                 connection.close()
     
     def delete(self, problemID: int) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -304,6 +320,7 @@ class ProblemsDBDAO(Database):
 
 class CallsDBDAO(Database):
     def create(self) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -328,6 +345,7 @@ class CallsDBDAO(Database):
                 connection.close()
     
     def insert(self, values: list) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -345,6 +363,7 @@ class CallsDBDAO(Database):
                 connection.close()
     
     def read(self, callID: int) -> dict:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -368,6 +387,7 @@ class CallsDBDAO(Database):
                 connection.close()
     
     def update(self, callID: int, values: dict) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
@@ -390,6 +410,7 @@ class CallsDBDAO(Database):
                 connection.close()
     
     def delete(self, callID: int) -> None:
+        connection = None
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
