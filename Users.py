@@ -42,12 +42,12 @@ class UsersManager(Manager):
             return False
         return True
 
-    #Modificado para se não houver um valido
+    #Modificado para se não houver um valido e adicionar ID
     def getByEmailAndPassword(self, userEmail: str, userPassword: str) -> Users:
         data = self.DAO.getUserByEmailAndPassword(userEmail, userPassword)
         if(len(data) == 0):
            return None
-        return Users(data.get('name'), data.get('email'), data.get('password'), data.get('position'))
+        return Users(data.get('id'), data.get('name'), data.get('email'), data.get('password'), data.get('position'))
 
     #Modificado para caso não haja dados
     def getByID(self, userID: int) -> Users|None:

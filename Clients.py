@@ -42,12 +42,12 @@ class ClientsManager(Manager):
             return False
         return True
 
-    #Modificado para caso não haja dados
+    #Modificado para caso não haja dados e adicionar ID
     def getByEmailAndPassword(self, clientEmail: str, clientPassword: str) -> Clients:
         data = self.DAO.getClientByEmailAndPassword(clientEmail, clientPassword)
         if(len(data) == 0):
            return None
-        return Clients(data.get('name'), data.get('email'), data.get('password'), data.get('company'), data.get('phone'))
+        return Clients(data.get('id'), data.get('name'), data.get('email'), data.get('password'), data.get('company'), data.get('phone'))
     
     #Modificado para caso não haja dados
     def getByID(self, clientID: int) -> Clients|None:
