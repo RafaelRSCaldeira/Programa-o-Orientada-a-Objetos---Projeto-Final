@@ -263,8 +263,8 @@ class ProblemsDBDAO(Database):
             cursor = connection.cursor()
             cursor.execute('''CREATE TABLE IF NOT EXISTS Problem 
             (id INTEGER PRIMARY KEY AUTOINCREMENT,
-            sla VARCHAR(255) NOT NULL, 
-            description VARCHAR(255) NOT NULL)''')
+            description VARCHAR(255) NOT NULL,
+            sla VARCHAR(255) NOT NULL)''')
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to create the table. Error: {error}.")
@@ -298,7 +298,7 @@ class ProblemsDBDAO(Database):
             cursor.execute(f'''SELECT * FROM Problem WHERE id = {problemID}''')
             result = cursor.fetchone()
             if result:
-                return {'id': result[0], 'sla': result[1], 'description': result[2]}
+                return {'id': result[0], 'description': result[1], 'sla': result[2]}
             else:
                 return dict()
         except sqlite3.Error as error:
