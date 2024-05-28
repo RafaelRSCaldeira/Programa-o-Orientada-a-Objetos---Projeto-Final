@@ -37,3 +37,6 @@ class UsersManager(Manager):
             return False
         return True
 
+    def getByEmailAndPassword(self, userEmail: str, userPassword: str) -> dict:
+        return self.DAO.getUserByEmailAndPassword(userEmail, userPassword)
+
