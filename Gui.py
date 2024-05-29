@@ -365,16 +365,16 @@ class UserEditer():
         self.user = self.usersManager.getByID(userId)
         #salvar os dados antigos
         self.userId = userId
-        self.oldName = self.user.name
-        self.oldEmail = self.user.email
-        self.oldPassword = self.user.password
-        self.oldPosition = self.user.position
         #Criar as entradas
         self.idLabel = CTkLabel(self.window, text = self.userId, width = 160, fg_color = "White", text_color = "Black")
-        self.nameEntry = CTkEntry(self.window, placeholder_text=self.oldName, width = 160, fg_color = "White", text_color = "Black")
-        self.emailEntry = CTkEntry(self.window, placeholder_text=self.oldEmail, width = 160, fg_color = "White", text_color = "Black")
-        self.passwordEntry = CTkEntry(self.window, placeholder_text=self.oldPassword, width = 160, fg_color = "White", text_color = "Black", show = '*')
-        self.positionEntry = CTkEntry(self.window, placeholder_text=self.oldPosition, width = 160, fg_color = "White", text_color = "Black")
+        self.nameEntry = CTkEntry(self.window, placeholder_text="Nome", width = 160, fg_color = "White", text_color = "Black")
+        self.emailEntry = CTkEntry(self.window, placeholder_text="Email", width = 160, fg_color = "White", text_color = "Black")
+        self.passwordEntry = CTkEntry(self.window, placeholder_text="Senha", width = 160, fg_color = "White", text_color = "Black", show = '*')
+        self.positionEntry = CTkEntry(self.window, placeholder_text="Posição", width = 160, fg_color = "White", text_color = "Black")
+        self.nameEntry.insert(0, self.user.name)
+        self.emailEntry.insert(0, self.user.email)
+        self.passwordEntry.insert(0, self.user.password)
+        self.positionEntry.insert(0, self.user.position)
         #Posicionar as entradas
         self.idLabel.grid(column = 0, row = 0, pady = 20, padx = 20)
         self.nameEntry.grid(column = 0, row = 1, pady = 0, padx = 20)
@@ -417,18 +417,18 @@ class ClientEditer():
         self.client = self.clientsManager.getByID(clientId)
         #salvar os dados antigos
         self.clientId = clientId
-        self.oldName = self.client.name
-        self.oldEmail = self.client.email
-        self.oldPassword = self.client.password
-        self.oldCompany = self.client.company
-        self.oldPhone = self.client.phone
         #Criar as entradas
         self.idLabel = CTkLabel(self.window, text = self.clientId, width = 160, fg_color = "White", text_color = "Black")
-        self.nameEntry = CTkEntry(self.window, placeholder_text = self.oldName, width = 160, fg_color = "White", text_color = "Black")
-        self.emailEntry = CTkEntry(self.window, placeholder_text = self.oldEmail, width = 160, fg_color = "White", text_color = "Black")
-        self.passwordEntry = CTkEntry(self.window, placeholder_text = self.oldPassword, width = 160, fg_color = "White", text_color = "Black", show = '*')
-        self.companyEntry = CTkEntry(self.window, placeholder_text = self.oldCompany, width = 160, fg_color = "White", text_color = "Black")
-        self.phoneEntry = CTkEntry(self.window, placeholder_text = self.oldPhone, width = 160, fg_color = "White", text_color = "Black")
+        self.nameEntry = CTkEntry(self.window, placeholder_text = "Nome", width = 160, fg_color = "White", text_color = "Black")
+        self.emailEntry = CTkEntry(self.window, placeholder_text = "Email", width = 160, fg_color = "White", text_color = "Black")
+        self.passwordEntry = CTkEntry(self.window, placeholder_text = "Senha", width = 160, fg_color = "White", text_color = "Black", show = '*')
+        self.companyEntry = CTkEntry(self.window, placeholder_text = "Empresa", width = 160, fg_color = "White", text_color = "Black")
+        self.phoneEntry = CTkEntry(self.window, placeholder_text =  "Telefone", width = 160, fg_color = "White", text_color = "Black")
+        self.nameEntry.insert(0, self.client.name)
+        self.emailEntry.insert(0, self.client.email)
+        self.passwordEntry.insert(0, self.client.password)
+        self.companyEntry.insert(0, self.client.company)
+        self.phoneEntry.insert(0, self.client.phone)
         #Posicionar as entradas
         self.idLabel.grid(column = 0, row = 0, pady = 20, padx = 20)
         self.nameEntry.grid(column = 0, row = 1, pady = 0, padx = 20)
@@ -473,13 +473,12 @@ class ProblemsEditer():
         self.problem = self.problemsManager.getByID(problemId)
         #salvar os dados antigos
         self.problemId = problemId
-        self.oldSla = self.problem.sla
-        self.oldDescription = self.problem.description
         #Criar as entradas
         self.idLabel = CTkLabel(self.window, text=self.problemId, width = 360, fg_color = "White", text_color = "Black")
-        self.slaEntry = CTkEntry(self.window, placeholder_text=self.oldSla, width = 360, fg_color = "White", text_color = "Black")
+        self.slaEntry = CTkEntry(self.window, placeholder_text="SLA", width = 360, fg_color = "White", text_color = "Black")
         self.descriptionEntry = CTkTextbox(self.window, width = 360, fg_color = "White", text_color = "Black", height = 100)
-        self.descriptionEntry.insert('insert', self.oldDescription)
+        self.slaEntry.insert(0, self.problem.sla)
+        self.descriptionEntry.insert('insert', self.problem.description)
         #Posicionar as entradas
         self.idLabel.grid(column = 0, row = 0, pady = 20, padx = 20)
         self.slaEntry.grid(column = 0, row = 1, pady = 0, padx = 20)
@@ -518,27 +517,26 @@ class CallsEditer():
         self.call = self.callsManager.getByID(callId)
         #salvar os dados antigos
         self.callId = callId
-        self.oldTitle = self.call.title
-        self.oldCategory = self.call.category
-        self.oldDescription = self.call.description
-        self.oldStatus = self.call.status
-        self.oldClientId = self.call.clientID
-        self.oldUserId = self.call.userID
-        self.oldOpeningDate = self.call.openingDate
-        self.oldMaxDate = self.call.maxDate
-        self.oldClosingDate = self.call.closingDate
         #Criar as entradas
         self.idLabel = CTkLabel(self.window, text=self.callId, width = 360, fg_color = "White", text_color = "Black")
-        self.titleEntry = CTkEntry(self.window, placeholder_text=self.oldTitle, width = 360, fg_color = "White", text_color = "Black")
-        self.categoryEntry = CTkEntry(self.window, placeholder_text=self.oldTitle, width = 360, fg_color = "White", text_color = "Black")
-        self.statusEntry = CTkEntry(self.window, placeholder_text=self.oldStatus, width = 360, fg_color = "White", text_color = "Black")
-        self.clientIdEntry = CTkEntry(self.window, placeholder_text=self.oldUserId, width = 360, fg_color = "White", text_color = "Black")
-        self.userIdEntry = CTkEntry(self.window, placeholder_text=self.oldTitle, width = 360, fg_color = "White", text_color = "Black")
-        self.openingDateEntry = CTkEntry(self.window, placeholder_text=self.oldOpeningDate, width = 360, fg_color = "White", text_color = "Black")
-        self.maxDateEntry = CTkEntry(self.window, placeholder_text=self.oldMaxDate, width = 360, fg_color = "White", text_color = "Black")
-        self.closingDateEntry = CTkEntry(self.window, placeholder_text=self.oldClosingDate, width = 360, fg_color = "White", text_color = "Black")
+        self.titleEntry = CTkEntry(self.window, placeholder_text="Titulo", width = 360, fg_color = "White", text_color = "Black")
+        self.categoryEntry = CTkEntry(self.window, placeholder_text="Categoria", width = 360, fg_color = "White", text_color = "Black")
+        self.statusEntry = CTkEntry(self.window, placeholder_text="Status", width = 360, fg_color = "White", text_color = "Black")
+        self.clientIdEntry = CTkEntry(self.window, placeholder_text="Client ID", width = 360, fg_color = "White", text_color = "Black")
+        self.userIdEntry = CTkEntry(self.window, placeholder_text="User ID", width = 360, fg_color = "White", text_color = "Black")
+        self.openingDateEntry = CTkEntry(self.window, placeholder_text="Data de abertura", width = 360, fg_color = "White", text_color = "Black")
+        self.maxDateEntry = CTkEntry(self.window, placeholder_text="Data máxima", width = 360, fg_color = "White", text_color = "Black")
+        self.closingDateEntry = CTkEntry(self.window, placeholder_text="Data de fechamento", width = 360, fg_color = "White", text_color = "Black")
         self.descriptionEntry = CTkTextbox(self.window, width = 360, fg_color = "White", text_color = "Black", height = 100)
-        self.descriptionEntry.insert('insert', self.oldDescription)
+        self.titleEntry.insert(0, self.call.title)
+        self.categoryEntry.insert(0, self.call.category)
+        self.statusEntry.insert(0, self.call.status)
+        self.clientIdEntry.insert(0, self.call.clientID)
+        self.userIdEntry.insert(0, self.call.userID)
+        self.openingDateEntry.insert(0, self.call.openingDate)
+        self.maxDateEntry.insert(0, self.call.maxDate)
+        self.closingDateEntry.insert(0, self.call.closingDate)
+        self.descriptionEntry.insert('insert', self.call.description)
         #Posicionar as entradas
         self.idLabel.grid(column = 0, row = 0, pady = 20, padx = 20)
         self.titleEntry.grid(column = 0, row = 1, pady = 0, padx = 20)
