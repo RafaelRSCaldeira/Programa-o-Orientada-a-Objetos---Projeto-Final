@@ -610,77 +610,72 @@ class ProblemVisualizer():
         self.slaLabel.pack()
 
 class CallsAdder():
-    def __init__(self, parent : Widget) -> None:
+    def __init__(self, parent : Widget, callback = (), client : Clients = None) -> None:
+        self.client = client
+        print(self.client)
+        self.callback = callback
         #Criar a janela
         self.window = Toplevel(parent)
         #Definir geometria padrão
         self.width = 400
-        self.height = 635
+        self.height = 535
+        if(not self.client):
+            self.height = 535
         self.window.geometry(f"{self.width}x{self.height}")
         self.window.resizable(False, False)      
         self.window.title("Criar chamado")
         #Criar as entradas
-        self.idEntry = CTkEntry(self.window, placeholder_text="ID Chamado", width = 360, fg_color = "White", text_color = "Black")
         self.titleEntry = CTkEntry(self.window, placeholder_text="Titulo", width = 360, fg_color = "White", text_color = "Black")
         self.categoryEntry = CTkEntry(self.window, placeholder_text="Categoria", width = 360, fg_color = "White", text_color = "Black")
-        self.statusEntry = CTkEntry(self.window, placeholder_text="Status", width = 360, fg_color = "White", text_color = "Black")
         self.clientIdEntry = CTkEntry(self.window, placeholder_text="ID Cliente", width = 360, fg_color = "White", text_color = "Black")
-        self.userIdEntry = CTkEntry(self.window, placeholder_text="ID Usuário", width = 360, fg_color = "White", text_color = "Black")
-        self.openingDateEntry = CTkEntry(self.window, placeholder_text="Data", width = 360, fg_color = "White", text_color = "Black")
         self.maxDateEntry = CTkEntry(self.window, placeholder_text="Data Máxima", width = 360, fg_color = "White", text_color = "Black")
-        self.closingDateEntry = CTkEntry(self.window, placeholder_text="Data de fechamento", width = 360, fg_color = "White", text_color = "Black")
         self.descriptionEntry = CTkTextbox(self.window, width = 360, fg_color = "White", text_color = "Black", height = 100)
         self.descriptionEntry.insert('insert', "Descrição")
-        #Posicionar as entradas
-        self.idEntry.grid(column = 0, row = 0, pady = 20, padx = 20)
-        self.titleEntry.grid(column = 0, row = 1, pady = 0, padx = 20)
-        self.categoryEntry.grid(column = 0, row = 2, pady = 20, padx = 20)
-        self.statusEntry.grid(column = 0, row = 3, pady = 0, padx = 20)
-        self.clientIdEntry.grid(column = 0, row = 4, pady = 20, padx = 20)
-        self.userIdEntry.grid(column = 0, row = 5, pady = 0, padx = 20)
-        self.openingDateEntry.grid(column = 0, row = 6, pady = 20, padx = 20)
-        self.maxDateEntry.grid(column = 0, row = 7, pady = 0, padx = 20)
-        self.closingDateEntry.grid(column = 0, row = 8, pady = 20, padx = 20)
-        self.descriptionEntry.grid(column = 0, row = 9, pady = 0, padx = 20)
-        #Criar e posicionar o botão
         self.editButton = CTkButton(self.window, text = 'Criar', command = self.add)
-        self.editButton.grid(column = 0, row = 10, pady = 40)
+        #Posicionar as entradas
+        self.titleEntry.grid(column = 0, row = 1, pady = 20, padx = 20)
+        self.categoryEntry.grid(column = 0, row = 2, pady = 20, padx = 20)
+        if(not self.client):
+            self.clientIdEntry.grid(column = 0, row = 4, pady = 20, padx = 20)
+            self.maxDateEntry.grid(column = 0, row = 5, pady = 20, padx = 20)
+            self.descriptionEntry.grid(column = 0, row = 6, pady = 20, padx = 20)
+            #Criar e posicionar o botão
+            self.editButton.grid(column = 0, row = 7, pady = 40)
+        else:
+            self.maxDateEntry.grid(column = 0, row = 4, pady = 20, padx = 20)
+            self.descriptionEntry.grid(column = 0, row = 5, pady = 20, padx = 20)
+            #Criar e posicionar o botão
+            self.editButton.grid(column = 0, row = 6, pady = 40)
 
     def add(self):
         #Criar um objeto usuário à partir dos dados fornecidos
-        user = Calls(self.idEntry.get(),
+        user = Calls(0,
                      self.titleEntry.get(),
                      self.descriptionEntry.get(0.0, 'end').strip('\n'),
                      self.categoryEntry.get(),
                      self.clientIdEntry.get(),
-                     self.userIdEntry.get(),
-                     self.statusEntry.get(),
-                     self.openingDateEntry.get(),
-                     self.closingDateEntry.get(),
+                     None,
+                     "open",
+                     str(datetime.datetime.now()),
+                     "undefined",
                      self.maxDateEntry.get())
         callsManager = CallsManager("manager.db")
         #Registrar o usuário no banco de dados se todos os campos foram preenchidos
-        if user.id != '' and user.title != '' and user.description != '' and user.category != '' and user.clientID != '' and user.userID != '' and user.status != '' and user.openingDate != '' and user.closingDate != '' and user.maxDate != '':
+        if user.title != '' and user.description != '' and user.category != '' and user.clientID != '' and user.maxDate != '':
             callsManager.open(user)
             self.window.withdraw()
+            self.callback()
         else:
             #Criar mensagem de erro
             messagebox.showwarning('Inválido', "Todos os campos devem ser preenchidos.")     
 
 class CallVisualizer():
     '''Janela para visualizar um Chamado'''
-    def __init__(self, parent : Widget, call) -> None:
+    def __init__(self, parent : Widget, call : str) -> None:
         #Salvar dados do Call
-        self.callID = 0
-        self.title = 'Placeholder title'
-        self.category = 'Placeholder category'
-        self.description = 'Placeholder description'
-        self.status = 'Open'
-        self.clientID = 0
-        self.attendantID = 0
-        self.openingDate = 0
-        self.maxDate = 0
-        self.closingDate = 0
+        self.callsManager = CallsManager('manager.db')
+        self.callID = int(call.split(" - ")[0])
+        self.call = self.callsManager.getByID(self.callID)
         #Criar Janela
         self.window = Toplevel(parent)
         self.window.title("ID - Titulo")
@@ -695,8 +690,8 @@ class CallVisualizer():
         #Frame para o titulo e categoria somente
         self.titleCategoryFrame = Frame(self.titleFrame)
         #Criar Label para titulo e categoria
-        self.titleLabel = CTkLabel(self.titleCategoryFrame, height=23, text=self.title, text_color='Black', font=("Arial", 20), justify='center')
-        self.categoryLabel = CTkLabel(self.titleCategoryFrame, height=23, text=self.category, text_color='Black', font=("Arial", 12), justify='center')
+        self.titleLabel = CTkLabel(self.titleCategoryFrame, height=23, text=self.call.title, text_color='Black', font=("Arial", 20), justify='center')
+        self.categoryLabel = CTkLabel(self.titleCategoryFrame, height=23, text=self.call.category, text_color='Black', font=("Arial", 12), justify='center')
         #Posicionar titulo e categoria no frame
         self.titleLabel.pack() 
         self.categoryLabel.pack()
@@ -712,7 +707,7 @@ class CallVisualizer():
         #Criar Texto de descrição
         self.descriptionText = Text(self.window, borderwidth=5, height=9)
         #Inserir Texto
-        self.descriptionText.insert(END, self.description)
+        self.descriptionText.insert(END, self.call.description)
         #Bloquear modificação
         self.descriptionText.config(state=DISABLED)
         #Colocar Texto
@@ -722,8 +717,8 @@ class CallVisualizer():
         self.idsFrame = CTkFrame(self.window, bg_color= 'transparent', fg_color='transparent')
         self.textFrame = CTkFrame(self.idsFrame, bg_color= 'transparent', fg_color='transparent')
         #Criar IDs de atendente e cliente
-        self.clientIDLabel = CTkLabel(self.textFrame, height=23, text=f"ID do Cliente: {self.clientID}", text_color='Black', font=("Arial", 16), justify='left')
-        self.attendantIDLabel = CTkLabel(self.textFrame, height=23, text=f"ID do Atendente: {self.attendantID}", text_color='Black', font=("Arial", 16), justify='left')
+        self.clientIDLabel = CTkLabel(self.textFrame, height=23, text=f"ID do Cliente: {self.call.clientID}", text_color='Black', font=("Arial", 16), justify='left')
+        self.attendantIDLabel = CTkLabel(self.textFrame, height=23, text=f"ID do Atendente: {self.call.userID}", text_color='Black', font=("Arial", 16), justify='left')
         #Posicionar IDs
         self.clientIDLabel.grid(row=0, column=0, sticky='W')
         self.attendantIDLabel.grid(row=1, column=0)
@@ -734,9 +729,9 @@ class CallVisualizer():
         #Criar frame para os tempos
         self.timeFrame = CTkFrame(self.window, bg_color= 'transparent', fg_color='transparent')
         #Criar os labels para os tempos
-        self.openTimeLabel = CTkLabel(self.timeFrame, height=23, text=f"Data de abertura: {self.openingDate}", text_color='Black', font=("Arial", 12), justify='left')
-        self.maxTimeLabel = CTkLabel(self.timeFrame, height=23, text=f"Data máxima: {self.maxDate}", text_color='Black', font=("Arial", 12), justify='left')
-        self.closeTimeLabel = CTkLabel(self.timeFrame, height=23, text=f"Data de fechamento: {self.closingDate}", text_color='Black', font=("Arial", 12), justify='left')
+        self.openTimeLabel = CTkLabel(self.timeFrame, height=23, text=f"Data de abertura: {self.call.openingDate}", text_color='Black', font=("Arial", 12), justify='left')
+        self.maxTimeLabel = CTkLabel(self.timeFrame, height=23, text=f"Data máxima: {self.call.maxDate}", text_color='Black', font=("Arial", 12), justify='left')
+        self.closeTimeLabel = CTkLabel(self.timeFrame, height=23, text=f"Data de fechamento: {self.call.closingDate}", text_color='Black', font=("Arial", 12), justify='left')
         #posicionar os tempos
         self.openTimeLabel.grid(row=0, column=0, sticky='WE', padx = 5)
         self.maxTimeLabel.grid(row=0, column=1, sticky='WE', padx = 5)
@@ -745,9 +740,9 @@ class CallVisualizer():
         self.timeFrame.pack(fill='x')
 
     def _getStatusColor(self) -> str:
-        if(self.status == 'Closed'):
+        if(self.call.status == 'closed'):
             return 'red'
-        elif(self.status == 'Open'):
+        elif(self.call.status == 'open'):
             return 'green'
         else:
             return 'yellow'
@@ -755,35 +750,109 @@ class CallVisualizer():
     #Data de Abertura, Data Máxima para Atendimento, 
     #Data de Fechamento
 
-class MainWindowRegular(MainWindow):#
-    '''Janela para usuários normais'''
-    def __init__(self, parent : Widget, user) -> None:
+class MainWindowRegular(MainWindow):
+    ''''Janela para Atendentes/Técnicos'''
+    def __init__(self, parent : Widget, user : Clients) -> None:
         super().__init__(parent, user)
-        #Menu acima da janela para botão
-        self.menubar = Menu(self.window)
-        self.window.config(menu=self.menubar)
-        self.menubar.add_command(label="Criar Chamado", command=self.openCreateCall)
-        self.menubar.add_command(label="Visualizar Chamado", command=self.visualizeCall)
+        self.user = user
+        self.callsManager = CallsManager("manager.db")
+
+        self.CategorySelectorFrame = Frame(self.window)
+        self.CategorySelectorFrame.pack(side = 'top', anchor = 'w', ipady = 10)
+        #Criar o Menu para seleção de item
+        self.callsSelectorButton = Radiobutton(self.CategorySelectorFrame, indicatoron = False, text = 'Chamados', value = 'calls', command = self.listAllCalls)
+        #Posicionar o Menu para seleção de itme
+        self.callsSelectorButton.grid(row = 0, column = 3)
+        #Criar o Frame para colocar a Lista e o Scroll
+        self.listFrame = Frame(self.window)
+        self.listFrame.pack(fill = 'both', expand = True)
         #Criar e configurar Scroll e Lista
-        self.scrollbar = Scrollbar(self.window, orient="vertical")
-        self.listbox = Listbox(self.window, width=50, height=20, yscrollcommand=self.scrollbar.set)
+        self.scrollbar = Scrollbar(self.listFrame, orient="vertical")
+        self.listbox = Listbox(self.listFrame, width=50, height=1, yscrollcommand=self.scrollbar.set)
         self.scrollbar.config(command=self.listbox.yview)
         #Posicionar Scroll e Lista
         self.scrollbar.pack(side="right", fill="y")
         self.listbox.pack(side="left",fill="both", expand=True)
+        #Criar Frame para os botões de adicionar, remover, visualizar e editar
+        self.buttonsFrame = Frame(self.window)
+        self.buttonsFrame.pack(side = 'left', ipady = 5)
+        #Criar os botões de adicionar, remover, visualizar e editar
+        self.addButton = Button(self.buttonsFrame, text = 'Adicionar', command = self.addItem)
+        self.visualizeButton = Button(self.buttonsFrame, text = 'Visualizar', command = self.visualizeItem)
+        #Posicionar os botões de adicionar, remover, visualizar e editar
+        self.addButton.grid(column = 0, row = 0)
+        self.visualizeButton.grid(column = 2, row = 0)
+        #Criar o frame para colocar os botões de filtro de chamados
+        self.filterButtonFrame = Frame(self.window)
+        #Criar os botões de filtro de chamados
+        self.statusFilter = StringVar()
+        self.statusFilter.set('all')
+        self.filterButtonAll = Radiobutton(self.filterButtonFrame, variable = self.statusFilter, value = 'all', text = 'Todos', command = self.listAllCalls)
+        self.filterButtonOpen = Radiobutton(self.filterButtonFrame, variable = self.statusFilter, value = 'open', text = 'Abertos', command = self.listOpenCalls)
+        self.filterButtonClosed = Radiobutton(self.filterButtonFrame, variable = self.statusFilter, value = 'closed', text = 'Fechados', command = self.listClosedCalls)
+        self.filterButtonInService = Radiobutton(self.filterButtonFrame, variable = self.statusFilter, value = 'in service', text = 'Em atendimento', command = self.listInServiceCalls)
+        #Posicionar os botões de filtros de chamados dentro do frame
+        self.filterButtonAll.grid(row = 0, column = 0)
+        self.filterButtonOpen.grid(row = 0, column = 1)
+        self.filterButtonClosed.grid(row = 0, column = 2)
+        self.filterButtonInService.grid(row = 0, column = 3)
+        #Mostrar usuários como padrão quando iniciar a janela
+        self.listAllCalls()
 
-        for i in range(0,100):
-            self.listbox.insert("end", "item #%s" % i)
+    #Mostrar a lista de todos os chamados
+    def listAllCalls(self):
+        self.filterButtonFrame.pack(before = self.listFrame, side = 'top', anchor = 'w')  
+        self.listbox.delete(0, 'end') 
+        for id in self.callsManager.getAllIds():
+            call = self.callsManager.getByID(id)
+            if(call.clientID == self.user.id):
+                self.listbox.insert("end", f"{id} - {call.title}")
 
-    def openCreateCall(self):
-        CallsAdder(self.window)
+    #Mostrar a lista de chamados abertos
+    def listOpenCalls(self):
+        self.filterButtonFrame.pack(before = self.listFrame, side = 'top', anchor = 'w')  
+        self.listbox.delete(0, 'end') 
+        for id in self.callsManager.getAllIds():
+            call = self.callsManager.getByID(id)
+            if(call.clientID == self.user.id and call.status == 'open'):
+                self.listbox.insert("end", f"{id} - {call.title}")
 
-    def visualizeCall(self):
-        CallVisualizer(self.window, "Nada")
-    # Essa janela só deve conter as opções de:
-        # criar chamados
-        # visualizar chamados
-        # (Obviamente somente os chamados próprios)
+    #Mostrar a lista de chamados fechados
+    def listClosedCalls(self):
+        self.filterButtonFrame.pack(before = self.listFrame, side = 'top', anchor = 'w')  
+        self.listbox.delete(0, 'end') 
+        for id in self.callsManager.getAllIds():
+            call = self.callsManager.getByID(id)
+            if(call.clientID == self.user.id and call.status == 'closed'):
+                self.listbox.insert("end", f"{id} - {call.title}")
+
+    #Mostrar a lista de chamados em atendimento
+    def listInServiceCalls(self):
+        self.filterButtonFrame.pack(before = self.listFrame, side = 'top', anchor = 'w')  
+        self.listbox.delete(0, 'end') 
+        for id in self.callsManager.getAllIds():
+            call = self.callsManager.getByID(id)
+            if(call.clientID == self.user.id and call.status == 'ongoing'):
+                self.listbox.insert("end", f"{id} - {call.title}")
+    
+    def _getFunction(self):
+        if(self.statusFilter == 'in service'):
+            return self.listInServiceCalls
+        if(self.statusFilter == 'open'):
+            return self.listOpenCalls
+        elif(self.statusFilter == 'closed'):
+            return self.listInServiceCalls
+        else:
+            return self.listAllCalls
+
+    def addItem(self):
+        CallsAdder(self.window, self._getFunction(), self.user)
+
+    def visualizeItem(self):
+        selected = self.listbox.get(ANCHOR)
+        print(selected)
+        if(selected):
+            CallVisualizer(self.window, self.listbox.get(ANCHOR))
 
 class InvalidUser(BaseException):
     pass
