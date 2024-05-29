@@ -695,7 +695,6 @@ class ProblemVisualizer():
 class CallsAdder():
     def __init__(self, parent : Widget, callback = (), client : Clients = None) -> None:
         self.client = client
-        print(self.client)
         self.callback = callback
         #Criar a janela
         self.window = Toplevel(parent)
@@ -933,7 +932,6 @@ class MainWindowRegular(MainWindow):
 
     def visualizeItem(self):
         selected = self.listbox.get(ANCHOR)
-        print(selected)
         if(selected):
             CallVisualizer(self.window, self.listbox.get(ANCHOR), self._getFunction())
 
@@ -949,7 +947,6 @@ class MainWindowSelector():
         elif(type(user) == Users):
             return MainWindowSpecial(parent, user)
         else:
-            print(user)
             raise InvalidUser("Erro usuário Inválido")
 
 class StartScreen:
