@@ -158,6 +158,8 @@ class MainWindowSpecial(MainWindow):
 
     def removeItem(self) -> None:
         self.itemInfo = self.listbox.get(ANCHOR).split()
+        if(len(self.itemInfo) == 0):
+            return
         self.itemId = self.itemInfo[0]
         if self.selectedCategory.get() == 'users':
             listBoxAnchor = self.listbox.get(ANCHOR)
@@ -182,6 +184,8 @@ class MainWindowSpecial(MainWindow):
 
     def visualizeItem(self) -> None:
         self.itemInfo = self.listbox.get(ANCHOR).split()
+        if(len(self.itemInfo) == 0):
+            return
         self.itemId = self.itemInfo[0]
         if self.selectedCategory.get() == 'users':
             UserVisualizer(self.window, self.itemId)
@@ -194,6 +198,8 @@ class MainWindowSpecial(MainWindow):
 
     def editItem(self) -> None:
         self.itemInfo = self.listbox.get(ANCHOR).split()
+        if(len(self.itemInfo) == 0):
+            return
         self.itemId = self.itemInfo[0]
         if self.selectedCategory.get() == 'users':
             UserEditer(self.window, self.itemId, self.refresh)
@@ -508,7 +514,7 @@ class CallsEditer():
         self.window = Toplevel(parent)
         #Definir geometria padrão
         self.width = 400
-        self.height = 635
+        self.height = 735
         self.window.geometry(f"{self.width}x{self.height}")
         self.window.resizable(False, False)      
         self.window.title("Editar chamado")
@@ -528,6 +534,7 @@ class CallsEditer():
         self.maxDateEntry = CTkEntry(self.window, placeholder_text="Data máxima", width = 360, fg_color = "White", text_color = "Black")
         self.closingDateEntry = CTkEntry(self.window, placeholder_text="Data de fechamento", width = 360, fg_color = "White", text_color = "Black")
         self.descriptionEntry = CTkTextbox(self.window, width = 360, fg_color = "White", text_color = "Black", height = 100)
+        self.feedbackEntry = CTkTextbox(self.window, width = 360, fg_color = "White", text_color = "Black", height = 100)
         self.titleEntry.insert(0, self.call.title)
         self.categoryEntry.insert(0, self.call.category)
         self.statusEntry.insert(0, self.call.status)
@@ -538,6 +545,10 @@ class CallsEditer():
         self.maxDateEntry.insert(0, self.call.maxDate)
         self.closingDateEntry.insert(0, self.call.closingDate)
         self.descriptionEntry.insert('insert', self.call.description)
+        if(self.call.feedback == ''):
+            self.feedbackEntry.insert('insert', 'Sem feedback')
+        else:
+            self.feedbackEntry.insert('insert', self.call.feedback)
         #Posicionar as entradas
         self.idLabel.grid(column = 0, row = 0, pady = 20, padx = 20)
         self.titleEntry.grid(column = 0, row = 1, pady = 0, padx = 20)
@@ -549,9 +560,10 @@ class CallsEditer():
         self.maxDateEntry.grid(column = 0, row = 7, pady = 0, padx = 20)
         self.closingDateEntry.grid(column = 0, row = 8, pady = 20, padx = 20)
         self.descriptionEntry.grid(column = 0, row = 9, pady = 0, padx = 20)
+        self.feedbackEntry.grid(column = 0, row = 10, pady = 20, padx = 20)
         #Criar e posicionar o botão
         self.editButton = CTkButton(self.window, text = 'Alterar', command = self.edit)
-        self.editButton.grid(column = 0, row = 10, pady = 40)
+        self.editButton.grid(column = 0, row = 11, pady = 10)
  
     def edit(self) -> None:
         #Criar variáveis temporárias para armazenar as informações novas
@@ -564,15 +576,16 @@ class CallsEditer():
         newMaxDate = self.maxDateEntry.get()
         newClosingDate = self.closingDateEntry.get()
         newDescription = self.descriptionEntry.get(0.0, 'end').strip('\n')
-        newCallInfo = Calls(self.callId, newTitle, newDescription, newCategory, newClientId, newUserId, newStatus, newOpeningDate, newClosingDate, newMaxDate)
+        newFeedback = self.feedbackEntry.get(0.0, 'end').strip('\n')
+        newCallInfo = Calls(self.callId, newTitle, newDescription, newCategory, newClientId, newUserId, newStatus, newOpeningDate, newClosingDate, newMaxDate, newFeedback)
         #Registrar o cliente no banco de dados se todos os campos foram preenchidos
-        if newTitle != '' and newDescription != ''and newCategory != ''and newStatus != ''and newClientId != '' and newOpeningDate != ''and newMaxDate != ''and newClosingDate != '':
+        if newTitle != '' and newDescription != ''and newCategory != ''and newStatus != ''and newClientId != '' and newOpeningDate != ''and newMaxDate != '':
             self.callsManager.update(newCallInfo)
             self.window.withdraw()
             self.callback()
         else:
             #Criar mensagem de erro
-            messagebox.showwarning('Inválido', "Todos os campos devem ser preenchidos.")  
+            messagebox.showwarning('Inválido', "Todos os campos exceto UserID e ClosingDate devem ser preenchidos.")  
 
 class UserVisualizer():
     '''Janela para visualizar um Chamado'''
@@ -738,8 +751,9 @@ class CallsAdder():
                      None,
                      "open",
                      str(datetime.datetime.now()),
-                     "undefined",
-                     self.maxDateEntry.get())
+                     "",
+                     self.maxDateEntry.get(),
+                     "")
         callsManager = CallsManager("manager.db")
         #Registrar o usuário no banco de dados se todos os campos foram preenchidos
         if user.title != '' and user.description != '' and user.category != '' and user.clientID != '' and user.maxDate != '':
@@ -785,14 +799,20 @@ class CallVisualizer():
         #Criar Frame Final
         self.titleFrame.pack(fill='x', pady=5)
 
+        self.descFeedFrame = CTkFrame(self.window, bg_color= 'transparent', fg_color='transparent')
         #Criar Texto de descrição
-        self.descriptionText = Text(self.window, borderwidth=5, height=9)
+        self.descriptionText = Text(self.descFeedFrame, borderwidth=5, height=9, width=32)
+        self.feedbackText = Text(self.descFeedFrame, borderwidth=5, height=9, width=32)
         #Inserir Texto
         self.descriptionText.insert(END, self.call.description)
+        self.feedbackText.insert(END, self.call.feedback)
         #Bloquear modificação
         self.descriptionText.config(state=DISABLED)
+        self.feedbackText.config(state=DISABLED)
         #Colocar Texto
-        self.descriptionText.pack(fill='x', pady=10)
+        self.descriptionText.pack(fill='x', side=LEFT, expand=True, padx=5)
+        self.feedbackText.pack(fill='x', side=RIGHT, expand=True,padx=5)
+        self.descFeedFrame.pack(fill='x', pady=10)
         
         #Criar Frames para os ids
         self.idsFrame = CTkFrame(self.window, bg_color= 'transparent', fg_color='transparent')
@@ -932,7 +952,7 @@ class MainWindowRegular(MainWindow):
     def visualizeItem(self) -> None:
         selected = self.listbox.get(ANCHOR)
         if(selected):
-            CallVisualizer(self.window, self.listbox.get(ANCHOR), self._getFunction())
+            CallVisualizer(self.window, self.listbox.get(ANCHOR))
 
 class InvalidUser(BaseException):
     pass

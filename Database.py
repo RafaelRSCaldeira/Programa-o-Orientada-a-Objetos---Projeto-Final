@@ -425,7 +425,8 @@ class CallsDBDAO(Database):
             status VARCHAR(255) NOT NULL,
             openingDate VARCHAR(255) NOT NULL,
             closingDate VARCHAR(255) NOT NULL,
-            maxDate VARCHAR(255) NOT NULL)''')
+            maxDate VARCHAR(255) NOT NULL,
+            feedback VARCHAR(255))''')
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to create the table. Error: {error}.")
@@ -441,8 +442,8 @@ class CallsDBDAO(Database):
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
             cursor.execute('''INSERT INTO Call (title, description, 
-            category, clientID, userID, status, openingDate, closingDate, maxDate)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', (values))
+            category, clientID, userID, status, openingDate, closingDate, maxDate, feedback)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', (values))
             connection.commit()
         except sqlite3.Error as error:
             print(f"Unable to insert data. Error: {error}.")
@@ -463,7 +464,7 @@ class CallsDBDAO(Database):
                 return {'id': result[0], 'title': result[1], 'description': result[2],
                         'category': result[3], 'clientID': result[4], 'userID': result[5],
                         'status': result[6], 'openingDate': result[7], 
-                        'closingDate': result[8], 'maxDate': result[9]}
+                        'closingDate': result[8], 'maxDate': result[9], 'feedback': result[10]}
             else:
                 return dict()
         except sqlite3.Error as error:

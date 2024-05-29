@@ -15,6 +15,7 @@ class Calls():
     openingDate: str
     closingDate: str
     maxDate: str
+    feedback: str
     
 class CallsManager():
     __instance = None
@@ -30,7 +31,7 @@ class CallsManager():
     def open(self, call: Calls) -> None:
         self.DAO.insert([call.title, call.description, call.category,
                          call.clientID, call.userID, call.status, call.openingDate,
-                         call.closingDate, call.maxDate])
+                         call.closingDate, call.maxDate, call.feedback])
 
     def assignUser(self, callID: int, userID: int) -> None:
         self.DAO.update(callID, {'userID': userID})
@@ -53,7 +54,8 @@ class CallsManager():
                 Status: {data['status']}\n\
                 Opening Date: {data['openingDate']}\n\
                 Closing Date: {data['closingDate']}\n\
-                Max Date: {data['maxDate']}")
+                Max Date: {data['maxDate']}\n\
+                Feedback: {data['feedback']}")
 
     #Modificado para adicionar ID
     def update(self, updateCall: Calls) -> None:
@@ -66,7 +68,7 @@ class CallsManager():
         data = self.DAO.read(callID)
         if len(data) == 0:
             return None
-        return Calls(data.get('id'), data.get('title'), data.get('description'), data.get('category'), data.get('clientID'), data.get('userID'), data.get('status'), data.get('openingDate'), data.get('closingDate'), data.get('maxDate'))
+        return Calls(data.get('id'), data.get('title'), data.get('description'), data.get('category'), data.get('clientID'), data.get('userID'), data.get('status'), data.get('openingDate'), data.get('closingDate'), data.get('maxDate'), data.get('feedback'))
 
     def delete(self, callID: int) -> None:
         self.DAO.delete(callID)
