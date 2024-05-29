@@ -9,20 +9,10 @@ def silentRemove(filename: str) -> None:
     except OSError:
         pass
 
-databaseName = "usersTest.db"
-
-@pytest.fixture(scope="module")
-def usersDAO():
-    silentRemove(databaseName)
-    usersDAO = UsersDBDAO(databaseName)
-    userData = ['User 1', 'user1@example.com', 'password123', 'Manager']
-    usersDAO.insert(userData)
-    yield usersDAO
-    silentRemove(databaseName)
-
-def test_create(usersDAO):
-    usersDAO.create()
-    connection = sqlite3.connect(databaseName)
+def test_create():
+    silentRemove("usersTest1.db")
+    usersDAO = UsersDBDAO("usersTest1.db")
+    connection = sqlite3.connect("usersTest1.db")
     cursor = connection.cursor()
     cursor.execute("PRAGMA table_info('User')")
     table_info = cursor.fetchall()
@@ -33,37 +23,70 @@ def test_create(usersDAO):
     assert table_info[2][1] == 'email'
     assert table_info[3][1] == 'password'
     assert table_info[4][1] == 'position'
+    silentRemove("usersTest1.db")
 
-def test_insert(usersDAO):
-    userData = ['User 2', 'user2@example.com', 'password123', 'Manager']
+def test_insert():
+    silentRemove("usersTest2.db")
+    usersDAO = UsersDBDAO("usersTest2.db")
+    userData = ['User 1', 'user1@example.com', 'password123', 'Manager']
     usersDAO.insert(userData)
-    connection = sqlite3.connect(databaseName)
+    connection = sqlite3.connect("usersTest2.db")
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM User WHERE id = 2")
+    cursor.execute("SELECT * FROM User WHERE id = 1")
     data = cursor.fetchone()
     connection.close()
-    assert data == (2, 'User 2', 'user2@example.com', 'password123', 'Manager')
+    assert data == (1, 'User 1', 'user1@example.com', 'password123', 'Manager')
+    silentRemove("usersTest2.db")
 
-def test_read(usersDAO):
-    userID = 1
-    userData = usersDAO.read(userID)
+def test_read():
+    silentRemove("usersTest3.db")
+    usersDAO = UsersDBDAO("usersTest3.db")
+    userData = ['User 1', 'user1@example.com', 'password123', 'Manager']
+    usersDAO.insert(userData)
+    userData = usersDAO.read(1)
     assert userData == {'id': 1, 'name': "User 1", 'email': "user1@example.com", 'password': "password123", 'position': "Manager"}
+    silentRemove("usersTest3.db")
 
-def test_update(usersDAO):
-    userID = 1
+def test_update():
+    silentRemove("usersTest4.db")
+    usersDAO = UsersDBDAO("usersTest4.db")
+    userData = ['User 1', 'user1@example.com', 'password123', 'Manager']
+    usersDAO.insert(userData)
     newData = {'name': 'User Updated', 'email': 'updated@example.com', 'password': 'newpassword', 'position': 'Employee'}
-    usersDAO.update(userID, newData)
-    userData = usersDAO.read(userID)
+    usersDAO.update(1, newData)
+    userData = usersDAO.read(1)
     assert userData == {'id': 1, 'name': 'User Updated', 'email': 'updated@example.com', 'password': 'newpassword', 'position': 'Employee'}
+    silentRemove("usersTest4.db")
 
-def test_delete(usersDAO):
-    userID = 1
-    usersDAO.delete(userID)
-    data = usersDAO.read(userID)
+def test_delete():
+    silentRemove("usersTest5.db")
+    usersDAO = UsersDBDAO("usersTest5.db")
+    userData = ['User 1', 'user1@example.com', 'password123', 'Manager']
+    usersDAO.insert(userData)
+    data = usersDAO.read(1)
+    assert data != {}
+    usersDAO.delete(1)
+    data = usersDAO.read(1)
     assert data == {}
+    silentRemove("usersTest5.db")
 
-def test_getUserByEmailAndPassword(usersDAO):
+def test_getUserByEmailAndPassword():
+    silentRemove("usersTest6.db")
+    usersDAO = UsersDBDAO("usersTest6.db")
+    userData = ['User 1', 'user1@example.com', 'password123', 'Manager']
+    usersDAO.insert(userData)
     userEmail = 'user1@example.com'
     userPassword = 'password123'
     userData = usersDAO.getUserByEmailAndPassword(userEmail, userPassword)
     assert userData == {'id': 1, 'name': "User 1", 'email': "user1@example.com", 'password': "password123", 'position': "Manager"}
+    silentRemove("usersTest6.db")
+
+def test_getAllIds():
+    silentRemove("usersTest7.db")
+    usersDAO = UsersDBDAO("usersTest7.db")
+    userData = ['User 1', 'user1@example.com', 'password123', 'Manager']
+    usersDAO.insert(userData)
+    usersDAO.insert(userData)
+    ids = usersDAO.getAllIds()
+    assert ids == [(1,), (2,)]
+    silentRemove("usersTest7.db")

@@ -10,41 +10,37 @@ def silentRemove(filename: str) -> None:
     except OSError:
         pass
 
-databaseName = "problemsTest.db"
-
-@pytest.fixture(scope="module")
-def problemsManager():
-    silentRemove(databaseName)
-    problemManager = ProblemsManager(databaseName)
-    problemManager.register(Problems('Server down', 2))
-    yield problemManager
-    silentRemove(databaseName)
-
 def test_createProblem():
-    problem = Problems('Server down', 5)
+    problem = Problems(1, 'Server down', 5)
     data = asdict(problem)
-    assert data == {'description': 'Server down', 'sla': 5}
+    assert data == {'id': 1, 'description': 'Server down', 'sla': 5}
 
-def test_register(problemsManager):
-    problemsManager.register(Problems('Server down', 2))
+def test_register():
+    silentRemove("problemsTest1.db")
+    problemManager = ProblemsManager("problemsTest1.db")
+    problemManager.register(Problems(1, 'Server down', 2))
     conn = None
     try:
-        conn = sqlite3.connect(databaseName)
+        conn = sqlite3.connect("problemsTest1.db")
         cursor = conn.cursor()
-        cursor.execute('''SELECT * FROM Problem WHERE ID = 2''')
-        assert cursor.fetchone() == (2, '2', 'Server down')
+        cursor.execute('''SELECT * FROM Problem WHERE ID = 1''')
+        assert cursor.fetchone() == (1, 'Server down', '2')
     except:
         assert False
     finally:
         if conn:
             conn.close()
+    silentRemove("problemsTest1.db")
 
-def test_update(problemsManager):
-    newProblem = Problems('License Expired', 1)
-    problemsManager.update(1, newProblem)
+def test_update():
+    silentRemove("problemsTest2.db")
+    problemManager = ProblemsManager("problemsTest2.db")
+    problemManager.register(Problems(1, 'Server down', 2))
+    newProblem = Problems(1, 'License Expired', 1)
+    problemManager.update(newProblem)
     conn = None
     try:
-        conn = sqlite3.connect(databaseName)
+        conn = sqlite3.connect("problemsTest2.db")
         cursor = conn.cursor()
         cursor.execute('''SELECT * FROM Problem WHERE ID = 1''')
         assert cursor.fetchone() == (1, 'License Expired', '1')
@@ -53,13 +49,17 @@ def test_update(problemsManager):
     finally:
         if conn:
             conn.close()
+    silentRemove("problemsTest2.db")
 
-def test_delete(problemsManager):
+def test_delete():
+    silentRemove("problemsTest3.db")
+    problemManager = ProblemsManager("problemsTest3.db")
+    problemManager.register(Problems(1, 'Server down', 2))
     problemID = 1
-    problemsManager.delete(problemID)
+    problemManager.delete(problemID)
     conn = None
     try:
-        conn = sqlite3.connect(databaseName)
+        conn = sqlite3.connect("problemsTest3.db")
         cursor = conn.cursor()
         cursor.execute('''SELECT * FROM Problem WHERE ID = 1''')
         assert cursor.fetchone() is None
@@ -68,3 +68,22 @@ def test_delete(problemsManager):
     finally:
         if conn:
             conn.close()
+    silentRemove("problemsTest3.db")
+
+def test_getByID():
+    silentRemove("problemsTest4.db")
+    problem = Problems(1, 'Server down', '2')
+    problemManager = ProblemsManager("problemsTest4.db")
+    problemManager.register(problem)
+    data = problemManager.getByID(1)
+    assert data == problem
+    silentRemove("problemsTest4.db")
+
+def test_getAllIds():
+    silentRemove("problemsTest5.db")
+    problemManager = ProblemsManager("problemsTest5.db")
+    problemManager.register(Problems(1, 'Server down', '2'))
+    problemManager.register(Problems(2, 'Server down', '2'))
+    ids = problemManager.getAllIds()
+    assert ids == [1, 2]
+    silentRemove("problemsTest5.db")
