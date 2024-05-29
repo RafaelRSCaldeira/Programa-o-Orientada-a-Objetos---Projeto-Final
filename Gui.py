@@ -431,7 +431,8 @@ class ProblemsEditer():
             messagebox.showwarning('Inválido', "Todos os campos devem ser preenchidos.")  
 
 class CallsEditer():
-    def __init__(self, parent : Widget, call) -> None:
+    def __init__(self, parent : Widget, call, callback = ()) -> None:
+        self.callback = callback
         #Criar a janela
         self.window = Toplevel(parent)
         #Definir geometria padrão
@@ -497,6 +498,7 @@ class CallsEditer():
                                                     'status': newStatus, 'openingDate': newOpeningDate, 
                                                     'closingDate': newClosingDate, 'maxDate': newMaxDate})
             self.window.withdraw()
+            self.callback()
         else:
             #Criar mensagem de erro
             messagebox.showwarning('Inválido', "Todos os campos devem ser preenchidos.")  
@@ -852,7 +854,7 @@ class MainWindowRegular(MainWindow):
         selected = self.listbox.get(ANCHOR)
         print(selected)
         if(selected):
-            CallVisualizer(self.window, self.listbox.get(ANCHOR))
+            CallVisualizer(self.window, self.listbox.get(ANCHOR), self._getFunction())
 
 class InvalidUser(BaseException):
     pass
