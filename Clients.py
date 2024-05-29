@@ -30,7 +30,7 @@ class ClientsManager(Manager):
     #Modificado para adicionar ID
     def update(self, updateClient: Clients) -> None:
         updateData = asdict(updateClient)
-        del updateClient['id']
+        del updateData['id']
         self.DAO.update(updateClient.id, updateData)
 
     def delete(self, clientID: int) -> None:
