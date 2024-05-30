@@ -31,7 +31,7 @@ class MainWindowSpecial(MainWindow):
         self.usersSelectorButton = Radiobutton(self.CategorySelectorFrame, indicatoron = False, text = 'Usuários', variable = self.selectedCategory, value = 'users', command = self.listUsers)
         self.clientsSelectorButton = Radiobutton(self.CategorySelectorFrame, indicatoron = False, text = 'Clientes', variable = self.selectedCategory, value = 'clients', command = self.listClients)
         self.problemsSelectorButton = Radiobutton(self.CategorySelectorFrame, indicatoron = False, text = 'Categorias de problemas', variable = self.selectedCategory, value = 'problems', command = self.listProblems)
-        self.callsSelectorButton = Radiobutton(self.CategorySelectorFrame, indicatoron = False, text = 'Chamados', variable = self.selectedCategory, value = 'calls', command = self.listAllCalls)
+        self.callsSelectorButton = Radiobutton(self.CategorySelectorFrame, indicatoron = False, text = 'Chamados', variable = self.selectedCategory, value = 'calls', command = self.refresh)
         #Posicionar o Menu para seleção de itme
         self.usersSelectorButton.grid(row = 0, column = 0)
         self.clientsSelectorButton.grid(row = 0, column = 1)
@@ -563,12 +563,14 @@ class CallsEditer():
                 self.clientIdDropdown.set(f"{self.call.clientID} - {self.clientsManager.getByID(self.call.clientID).name}")
             else:
                 self.clientIdDropdown.set(f"{self.call.clientID} - Cliente Deletado")
+                self.clientIdDropdown.configure(state='disabled')
         if(self.call.userID):
             if(self.call.userID != ""):
                 if(self.usersManager.getByID(self.call.userID)):
                     self.userIdDropdown.set(f"{self.call.userID} - {self.usersManager.getByID(self.call.userID).name}")
                 else:
                     self.userIdDropdown.set(f"{self.call.userID} - Usuário Deletado")
+                    self.userIdDropdown.configure(state='disabled')
         self.openingDateEntry.insert(0, self.call.openingDate)
         self.maxDateEntry.insert(0, self.call.maxDate)
         self.closingDateEntry.insert(0, self.call.closingDate)
@@ -779,6 +781,7 @@ class CallsAdder():
             #Criar e posicionar o botão
             self.editButton.grid(column = 0, row = 7, pady = 40)
         else:
+            self.clientIdDropdown.set(f"{self.client.id} - {self.client.name}")
             self.maxDateEntry.grid(column = 0, row = 4, pady = 20, padx = 20)
             self.descriptionEntry.grid(column = 0, row = 5, pady = 20, padx = 20)
             #Criar e posicionar o botão
@@ -796,7 +799,7 @@ class CallsAdder():
                      str(datetime.datetime.now()),
                      "",
                      self.maxDateEntry.get(),
-                     "")
+                     "Sem Feedback")
         callsManager = CallsManager("manager.db")
         #Registrar o usuário no banco de dados se todos os campos foram preenchidos
         if user.title != '' and user.description != '' and user.category != '' and user.clientID != '' and user.maxDate != '':
