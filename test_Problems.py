@@ -24,7 +24,7 @@ def test_register():
         conn = sqlite3.connect("problemsTest1.db")
         cursor = conn.cursor()
         cursor.execute('''SELECT * FROM Problem WHERE ID = 1''')
-        assert cursor.fetchone() == (1, '2', 'Server down')
+        assert cursor.fetchone() == (1, 'Server down', '2')
     except:
         assert False
     finally:
@@ -72,7 +72,7 @@ def test_delete():
 
 def test_getByID():
     silentRemove("problemsTest4.db")
-    problem = Problems(1, '2', 'Server down')
+    problem = Problems(1, 'Server down', '2')
     problemManager = ProblemsManager("problemsTest4.db")
     problemManager.register(problem)
     data = problemManager.getByID(1)
