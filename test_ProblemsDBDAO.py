@@ -33,13 +33,13 @@ def test_insert():
     cursor.execute("SELECT * FROM Problem WHERE id = 1")
     data = cursor.fetchone()
     connection.close()
-    assert data == (1, '2 hours', 'Server down')
+    assert data == (1, 'Server down', '2 hours')
     silentRemove("problemsTest2.db")
 
 def test_read():
     silentRemove("problemsTest3.db")
     problemsDAO = ProblemsDBDAO("problemsTest3.db")
-    problemData = ['2 hours', 'Server down']
+    problemData = ['Server down', '2 hours']
     problemsDAO.insert(problemData)
     problemID = 1
     problemData = problemsDAO.read(problemID)
