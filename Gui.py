@@ -23,6 +23,7 @@ class MainWindowSpecial(MainWindow):
     ''''Janela para Atendentes/Técnicos'''
     def __init__(self, parent : Widget, user : Users) -> None:
         super().__init__(parent, user)
+        self.user = user
         self.CategorySelectorFrame = Frame(self.window)
         self.CategorySelectorFrame.pack(side = 'top', anchor = 'w', ipady = 10)
         #Criar o Menu para seleção de item
@@ -163,6 +164,9 @@ class MainWindowSpecial(MainWindow):
         self.itemId = self.itemInfo[0]
         if self.selectedCategory.get() == 'users':
             listBoxAnchor = self.listbox.get(ANCHOR)
+            if(int(self.itemId) == self.user.id):
+                messagebox.showwarning("Remoção", "Você não pode remover si mesmo!")
+                return
             self.listbox.delete(ANCHOR)
             self.usersManager.delete(self.itemId)
             print(f'{listBoxAnchor} removido')
@@ -345,6 +349,7 @@ class ProblemsAdder():
                      self.descriptionEntry.get(0.0, 'end').strip('\n'),
                      self.slaEntry.get(),
                      )
+        print(problem)
         problemsManager = ProblemsManager('manager.db')
         #Registrar o problema no banco de dados se todos os campos foram preenchidos
         if problem.id != '' and problem.description != '' and problem.sla != '':
@@ -477,6 +482,7 @@ class ProblemsEditer():
         #criar um manager
         self.problemsManager = ProblemsManager("manager.db")
         self.problem = self.problemsManager.getByID(problemId)
+        print(self.problem)
         #salvar os dados antigos
         self.problemId = problemId
         #Criar as entradas
@@ -520,16 +526,30 @@ class CallsEditer():
         self.window.title("Editar chamado")
         #criar um manager
         self.callsManager = CallsManager("manager.db")
+        self.usersManager = UsersManager("manager.db")
+        self.clientsManager = ClientsManager("manager.db")
         self.call = self.callsManager.getByID(callId)
         #salvar os dados antigos
         self.callId = callId
+        self.oldStatus = self.call.status
+        self.oldClientId = self.call.clientID
+        self.oldUserId = self.call.userID
         #Criar as entradas
         self.idLabel = CTkLabel(self.window, text=self.callId, width = 360, fg_color = "White", text_color = "Black")
         self.titleEntry = CTkEntry(self.window, placeholder_text="Titulo", width = 360, fg_color = "White", text_color = "Black")
         self.categoryEntry = CTkEntry(self.window, placeholder_text="Categoria", width = 360, fg_color = "White", text_color = "Black")
-        self.statusEntry = CTkEntry(self.window, placeholder_text="Status", width = 360, fg_color = "White", text_color = "Black")
-        self.clientIdEntry = CTkEntry(self.window, placeholder_text="Client ID", width = 360, fg_color = "White", text_color = "Black")
-        self.userIdEntry = CTkEntry(self.window, placeholder_text="User ID", width = 360, fg_color = "White", text_color = "Black")
+        self.statusSelected = StringVar()
+        self.statusDropdown = CTkComboBox(self.window, width=360, fg_color = "White", text_color = "Black", variable=self.statusSelected, values=['open', 'ongoing', 'closed'], state='readonly', dropdown_fg_color='White', dropdown_text_color='Black', dropdown_hover_color='Gray')
+        self.clientIdSelected = StringVar()
+        clientIds = []
+        for i in self.clientsManager.getAllIds():
+            clientIds.append(f"{i} - {self.clientsManager.getByID(i).name}")
+        self.clientIdDropdown = CTkComboBox(self.window, width=360, fg_color = "White", text_color = "Black", variable=self.clientIdSelected, values=clientIds, state='readonly', dropdown_fg_color='White', dropdown_text_color='Black', dropdown_hover_color='Gray')
+        self.userIdSelected = StringVar()
+        userIds = [""]
+        for i in self.usersManager.getAllIds():
+            userIds.append(f"{i} - {self.usersManager.getByID(i).name}")
+        self.userIdDropdown = CTkComboBox(self.window, width=360, fg_color = "White", text_color = "Black", variable=self.userIdSelected, values=userIds, state='readonly', dropdown_fg_color='White', dropdown_text_color='Black', dropdown_hover_color='Gray')
         self.openingDateEntry = CTkEntry(self.window, placeholder_text="Data de abertura", width = 360, fg_color = "White", text_color = "Black")
         self.maxDateEntry = CTkEntry(self.window, placeholder_text="Data máxima", width = 360, fg_color = "White", text_color = "Black")
         self.closingDateEntry = CTkEntry(self.window, placeholder_text="Data de fechamento", width = 360, fg_color = "White", text_color = "Black")
@@ -537,10 +557,18 @@ class CallsEditer():
         self.feedbackEntry = CTkTextbox(self.window, width = 360, fg_color = "White", text_color = "Black", height = 100)
         self.titleEntry.insert(0, self.call.title)
         self.categoryEntry.insert(0, self.call.category)
-        self.statusEntry.insert(0, self.call.status)
-        self.clientIdEntry.insert(0, self.call.clientID)
+        self.statusDropdown.set(self.call.status)
+        if(self.call.clientID):
+            if(self.clientsManager.getByID(self.call.clientID)):
+                self.clientIdDropdown.set(f"{self.call.clientID} - {self.clientsManager.getByID(self.call.clientID).name}")
+            else:
+                self.clientIdDropdown.set(f"{self.call.clientID} - Cliente Deletado")
         if(self.call.userID):
-            self.userIdEntry.insert(0, self.call.userID)
+            if(self.call.userID != ""):
+                if(self.usersManager.getByID(self.call.userID)):
+                    self.userIdDropdown.set(f"{self.call.userID} - {self.usersManager.getByID(self.call.userID).name}")
+                else:
+                    self.userIdDropdown.set(f"{self.call.userID} - Usuário Deletado")
         self.openingDateEntry.insert(0, self.call.openingDate)
         self.maxDateEntry.insert(0, self.call.maxDate)
         self.closingDateEntry.insert(0, self.call.closingDate)
@@ -553,9 +581,9 @@ class CallsEditer():
         self.idLabel.grid(column = 0, row = 0, pady = 20, padx = 20)
         self.titleEntry.grid(column = 0, row = 1, pady = 0, padx = 20)
         self.categoryEntry.grid(column = 0, row = 2, pady = 20, padx = 20)
-        self.statusEntry.grid(column = 0, row = 3, pady = 0, padx = 20)
-        self.clientIdEntry.grid(column = 0, row = 4, pady = 20, padx = 20)
-        self.userIdEntry.grid(column = 0, row = 5, pady = 0, padx = 20)
+        self.statusDropdown.grid(column = 0, row = 3, pady = 0, padx = 20)
+        self.clientIdDropdown.grid(column = 0, row = 4, pady = 20, padx = 20)
+        self.userIdDropdown.grid(column = 0, row = 5, pady = 0, padx = 20)
         self.openingDateEntry.grid(column = 0, row = 6, pady = 20, padx = 20)
         self.maxDateEntry.grid(column = 0, row = 7, pady = 0, padx = 20)
         self.closingDateEntry.grid(column = 0, row = 8, pady = 20, padx = 20)
@@ -569,9 +597,17 @@ class CallsEditer():
         #Criar variáveis temporárias para armazenar as informações novas
         newTitle = self.titleEntry.get()
         newCategory = self.categoryEntry.get()
-        newStatus = self.statusEntry.get()
-        newClientId = self.clientIdEntry.get()
-        newUserId = self.userIdEntry.get()
+        newStatus = self.statusSelected.get()
+        newClientId = self.clientIdSelected.get()
+        if(newClientId != ''):
+                newClientId = newClientId.split()[0]
+                if(newClientId == 'Cliente Deletado'):
+                    newClientId = self.oldClientId
+        newUserId = self.userIdSelected.get()
+        if(newUserId != ''):
+            newUserId = newUserId.split()[0]
+            if(newUserId == 'Usuário Deletado'):
+                newUserId = self.oldUserId
         newOpeningDate = self.openingDateEntry.get()
         newMaxDate = self.maxDateEntry.get()
         newClosingDate = self.closingDateEntry.get()
@@ -582,6 +618,8 @@ class CallsEditer():
         if newTitle != '' and newDescription != ''and newCategory != ''and newStatus != ''and newClientId != '' and newOpeningDate != ''and newMaxDate != '':
             self.callsManager.update(newCallInfo)
             self.window.withdraw()
+            if((self.oldStatus == 'ongoing' or self.oldStatus == 'open') and newStatus == 'closed'):
+                self.callsManager.close(self.callId)
             self.callback()
         else:
             #Criar mensagem de erro
@@ -710,6 +748,7 @@ class CallsAdder():
         self.callback = callback
         #Criar a janela
         self.window = Toplevel(parent)
+        self.clientsManager = ClientsManager('manager.db')
         #Definir geometria padrão
         self.width = 400
         self.height = 535
@@ -721,7 +760,11 @@ class CallsAdder():
         #Criar as entradas
         self.titleEntry = CTkEntry(self.window, placeholder_text="Titulo", width = 360, fg_color = "White", text_color = "Black")
         self.categoryEntry = CTkEntry(self.window, placeholder_text="Categoria", width = 360, fg_color = "White", text_color = "Black")
-        self.clientIdEntry = CTkEntry(self.window, placeholder_text="ID Cliente", width = 360, fg_color = "White", text_color = "Black")
+        self.clientIdSelected = StringVar()
+        clientIds = []
+        for i in self.clientsManager.getAllIds():
+            clientIds.append(f"{i} - {self.clientsManager.getByID(i).name}")
+        self.clientIdDropdown = CTkComboBox(self.window, width=360, fg_color = "White", text_color = "Black", variable=self.clientIdSelected, values=clientIds, state='readonly', dropdown_fg_color='White', dropdown_text_color='Black', dropdown_hover_color='Gray')
         self.maxDateEntry = CTkEntry(self.window, placeholder_text="Data Máxima", width = 360, fg_color = "White", text_color = "Black")
         self.descriptionEntry = CTkTextbox(self.window, width = 360, fg_color = "White", text_color = "Black", height = 100)
         self.descriptionEntry.insert('insert', "Descrição")
@@ -730,7 +773,7 @@ class CallsAdder():
         self.titleEntry.grid(column = 0, row = 1, pady = 20, padx = 20)
         self.categoryEntry.grid(column = 0, row = 2, pady = 20, padx = 20)
         if(not self.client):
-            self.clientIdEntry.grid(column = 0, row = 4, pady = 20, padx = 20)
+            self.clientIdDropdown.grid(column = 0, row = 4, pady = 20, padx = 20)
             self.maxDateEntry.grid(column = 0, row = 5, pady = 20, padx = 20)
             self.descriptionEntry.grid(column = 0, row = 6, pady = 20, padx = 20)
             #Criar e posicionar o botão
@@ -747,7 +790,7 @@ class CallsAdder():
                      self.titleEntry.get(),
                      self.descriptionEntry.get(0.0, 'end').strip('\n'),
                      self.categoryEntry.get(),
-                     self.clientIdEntry.get(),
+                     self.clientIdSelected.get().split()[0],
                      None,
                      "open",
                      str(datetime.datetime.now()),

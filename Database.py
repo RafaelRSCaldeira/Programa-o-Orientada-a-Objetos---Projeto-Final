@@ -323,7 +323,7 @@ class ProblemsDBDAO(Database):
         try:
             connection = sqlite3.connect(self.DBName)
             cursor = connection.cursor()
-            cursor.execute('''INSERT INTO Problem (sla, description)
+            cursor.execute('''INSERT INTO Problem (description, sla)
             VALUES (?, ?)''', (values))
             connection.commit()
         except sqlite3.Error as error:
